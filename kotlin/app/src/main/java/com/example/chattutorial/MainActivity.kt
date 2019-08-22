@@ -1,6 +1,5 @@
 package com.example.chattutorial
 
-import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -11,15 +10,12 @@ import com.getstream.sdk.chat.enums.Filters.`in`
 import com.getstream.sdk.chat.rest.User
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
 import java.util.*
-import android.content.Intent
-import com.getstream.sdk.chat.model.Channel
 
 
 /**
  * This activity shows a list of channels
  */
 class MainActivity : AppCompatActivity() {
-
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +63,6 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
-
 
 
 }

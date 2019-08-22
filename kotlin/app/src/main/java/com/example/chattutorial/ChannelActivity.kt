@@ -1,25 +1,30 @@
 package com.example.chattutorial
 
 import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.getstream.sdk.chat.view.Dialog.MoreActionDialog
-import com.getstream.sdk.chat.view.Dialog.ReactionDialog
 import android.content.Intent
 import android.content.pm.PackageManager
-import com.getstream.sdk.chat.viewmodel.ChannelViewModel
-import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory
-import androidx.lifecycle.ViewModelProviders
+import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.getstream.sdk.chat.StreamChat
+import androidx.lifecycle.ViewModelProviders
 import com.example.chattutorial.databinding.ActivityChannelBinding
+import com.getstream.sdk.chat.StreamChat
 import com.getstream.sdk.chat.model.Attachment
 import com.getstream.sdk.chat.model.Channel
 import com.getstream.sdk.chat.rest.Message
 import com.getstream.sdk.chat.utils.Constant
 import com.getstream.sdk.chat.utils.PermissionChecker
+import com.getstream.sdk.chat.view.Dialog.MoreActionDialog
+import com.getstream.sdk.chat.view.Dialog.ReactionDialog
 import com.getstream.sdk.chat.view.MessageInputView
 import com.getstream.sdk.chat.view.MessageListView
+import com.getstream.sdk.chat.viewmodel.ChannelViewModel
+import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory
+import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler
+import androidx.lifecycle.MutableLiveData
+import com.getstream.sdk.chat.model.Event
+
+
 
 
 /**
@@ -60,11 +65,35 @@ class ChannelActivity : AppCompatActivity(), MessageListView.MessageClickListene
         binding!!.messageList.setMessageClickListener(this)
         binding!!.messageList.setMessageLongClickListener(this)
         binding!!.messageList.setAttachmentClickListener(this)
+        val factory = MyMessageViewHolderFactory()
+        binding!!.messageList.setViewHolderFactory(factory)
         binding!!.messageInput.setOpenCameraViewListener(this)
 
         // connect the view model
         binding!!.viewModel = viewModel
-        binding!!.channelHeader.setViewModel(viewModel, this)
+        val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
+//        channel.addEventHandler(object : ChatChannelEventHandler() {
+//            override fun onTypingStart(event: Event) {
+//                val typingCopy : lii = currentlyTyping.value
+//                if (!typingCopy!!.contains(event.getUser().getName())) {
+//                    typingCopy.add(event.getUser().getName())
+//                }
+//                currentlyTyping.postValue(typingCopy)
+//            }
+//
+//            override fun onTypingStop(event: Event) {
+//                val typingCopy = currentlyTyping.value
+//                typingCopy!!.remove(event.getUser().getName())
+//                currentlyTyping.postValue(typingCopy)
+//            }
+//        })
+//        currentlyTyping.observe(this, { users ->
+//            var typing = "nobody is typing"
+//            if (!users.isEmpty()) {
+//                typing = "typing: " + users.joinToString(", ")
+//            }
+//            binding.setTyping(typing)
+//        })
         binding!!.messageList.setViewModel(viewModel!!, this)
         binding!!.messageInput.setViewModel(viewModel, this)
     }
