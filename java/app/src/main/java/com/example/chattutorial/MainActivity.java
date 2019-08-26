@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
-import com.example.chattutorial.R;
 import com.example.chattutorial.databinding.ActivityMainBinding;
 import com.getstream.sdk.chat.StreamChat;
 import com.getstream.sdk.chat.enums.FilterObject;
@@ -24,10 +23,8 @@ import static com.getstream.sdk.chat.enums.Filters.in;
  * This activity shows a list of channels
  */
 public class MainActivity extends AppCompatActivity {
-
     public static final String EXTRA_CHANNEL_TYPE = "com.example.chattutorial.CHANNEL_TYPE";
     public static final String EXTRA_CHANNEL_ID = "com.example.chattutorial.CHANNEL_ID";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

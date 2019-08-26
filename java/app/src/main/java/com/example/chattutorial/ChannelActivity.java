@@ -5,24 +5,17 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chattutorial.databinding.ActivityChannelBinding;
 import com.getstream.sdk.chat.StreamChat;
-import com.getstream.sdk.chat.model.Attachment;
 import com.getstream.sdk.chat.model.Channel;
-import com.getstream.sdk.chat.rest.Message;
-import com.getstream.sdk.chat.rest.User;
 import com.getstream.sdk.chat.rest.core.Client;
 import com.getstream.sdk.chat.utils.Constant;
 import com.getstream.sdk.chat.utils.PermissionChecker;
-import com.getstream.sdk.chat.view.Dialog.MoreActionDialog;
-import com.getstream.sdk.chat.view.Dialog.ReactionDialog;
 import com.getstream.sdk.chat.view.MessageInputView;
-import com.getstream.sdk.chat.view.MessageListView;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory;
 
@@ -31,15 +24,7 @@ import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory;
  * Show the messages for a channel
  */
 public class ChannelActivity extends AppCompatActivity
-        implements MessageListView.MessageClickListener,
-        MessageListView.MessageLongClickListener,
-        MessageListView.AttachmentClickListener,
-        MessageListView.HeaderOptionsClickListener,
-        MessageListView.HeaderAvatarGroupClickListener,
-        MessageListView.UserClickListener,
-        MessageInputView.OpenCameraViewListener {
-
-    final String TAG = ChannelActivity.class.getSimpleName();
+        implements MessageInputView.OpenCameraViewListener {
 
     private ChannelViewModel viewModel;
     private ActivityChannelBinding binding;
@@ -67,19 +52,11 @@ public class ChannelActivity extends AppCompatActivity
         ).get(ChannelViewModel.class);
 
         // set listeners
-        binding.messageList.setMessageClickListener(this);
-        binding.messageList.setMessageLongClickListener(this);
-        binding.messageList.setUserClickListener(this);
-        binding.messageList.setAttachmentClickListener(this);
         binding.messageInput.setOpenCameraViewListener(this);
-
-        binding.messageList.setViewHolderFactory(new MyMessageViewHolderFactory());
 
         // connect the view model
         binding.setViewModel(viewModel);
         binding.channelHeader.setViewModel(viewModel, this);
-        binding.channelHeader.setHeaderOptionsClickListener(this);
-        binding.channelHeader.setHeaderAvatarGroupClickListener(this);
         binding.messageList.setViewModel(viewModel, this);
         binding.messageInput.setViewModel(viewModel, this);
     }
@@ -92,7 +69,6 @@ public class ChannelActivity extends AppCompatActivity
     }
 
     @Override
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         if (requestCode == Constant.PERMISSIONS_REQUEST) {
@@ -109,56 +85,5 @@ public class ChannelActivity extends AppCompatActivity
     @Override
     public void openCameraView(Intent intent, int REQUEST_CODE) {
         startActivityForResult(intent, REQUEST_CODE);
-    }
-
-    @Override
-    public void onMessageClick(Message message, int position) {
-        new ReactionDialog(this)
-                .setChannel(viewModel.getChannel())
-                .setMessage(message)
-                .setMessagePosition(position)
-                .setRecyclerView(binding.messageList)
-                .setStyle(binding.messageList.getStyle())
-                .show();
-    }
-
-    @Override
-    public void onMessageLongClick(Message message) {
-        new MoreActionDialog(this)
-                .setChannel(viewModel.getChannel())
-                .setMessage(message)
-                .setStyle(binding.messageList.getStyle())
-                .show();
-    }
-
-    @Override
-    public void onAttachmentClick(Message message, Attachment attachment) {
-        binding.messageList.showAttachment(message, attachment);
-
-    }
-
-    @Override
-    public void onHeaderOptionsClick(Channel channel) {
-        new AlertDialog.Builder(this)
-                .setTitle("Options for channel " + channel.getName())
-                .setMessage("You pressed on the options, well done")
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.stream_ic_settings)
-                .show();
-    }
-
-    @Override
-    public void onHeaderAvatarGroupClick(Channel channel) {
-        new AlertDialog.Builder(this)
-                .setTitle("Avatar group click for channel " + channel.getName())
-                .setMessage("You pressed on the avatar group, well done")
-                .setNegativeButton(android.R.string.no, null)
-                .setIcon(R.drawable.stream_ic_settings)
-                .show();
-    }
-
-    @Override
-    public void onUserClick(User user) {
-        // open your user profile
     }
 }

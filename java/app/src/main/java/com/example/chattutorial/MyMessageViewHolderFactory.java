@@ -2,7 +2,6 @@ package com.example.chattutorial;
 
 import android.view.ViewGroup;
 
-import com.example.chattutorial.R;
 import com.getstream.sdk.chat.BaseAttachmentViewHolder;
 import com.getstream.sdk.chat.adapter.AttachmentListItemAdapter;
 import com.getstream.sdk.chat.adapter.MessageViewHolderFactory;
