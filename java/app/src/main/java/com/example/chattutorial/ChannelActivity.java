@@ -7,17 +7,21 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chattutorial.databinding.ActivityChannelBinding;
 import com.getstream.sdk.chat.StreamChat;
 import com.getstream.sdk.chat.model.Channel;
+
 import com.getstream.sdk.chat.rest.core.Client;
 import com.getstream.sdk.chat.utils.Constant;
 import com.getstream.sdk.chat.utils.PermissionChecker;
 import com.getstream.sdk.chat.view.MessageInputView;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory;
+
+
 
 
 /**
@@ -56,7 +60,6 @@ public class ChannelActivity extends AppCompatActivity
 
         // connect the view model
         binding.setViewModel(viewModel);
-        binding.channelHeader.setViewModel(viewModel, this);
         binding.messageList.setViewModel(viewModel, this);
         binding.messageInput.setViewModel(viewModel, this);
     }
