@@ -1,35 +1,30 @@
 package com.example.chattutorial;
 
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chattutorial.databinding.ActivityChannelBinding;
 import com.getstream.sdk.chat.StreamChat;
 import com.getstream.sdk.chat.model.Attachment;
 import com.getstream.sdk.chat.model.Channel;
-import com.getstream.sdk.chat.model.Event;
 import com.getstream.sdk.chat.rest.Message;
-import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler;
+import com.getstream.sdk.chat.rest.User;
 import com.getstream.sdk.chat.rest.core.Client;
 import com.getstream.sdk.chat.utils.Constant;
 import com.getstream.sdk.chat.utils.PermissionChecker;
+import com.getstream.sdk.chat.view.Dialog.MoreActionDialog;
 import com.getstream.sdk.chat.view.Dialog.ReactionDialog;
 import com.getstream.sdk.chat.view.MessageInputView;
 import com.getstream.sdk.chat.view.MessageListView;
-import com.getstream.sdk.chat.view.Dialog.MoreActionDialog;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -39,6 +34,9 @@ public class ChannelActivity extends AppCompatActivity
         implements MessageListView.MessageClickListener,
         MessageListView.MessageLongClickListener,
         MessageListView.AttachmentClickListener,
+        MessageListView.HeaderOptionsClickListener,
+        MessageListView.HeaderAvatarGroupClickListener,
+        MessageListView.UserClickListener,
         MessageInputView.OpenCameraViewListener {
 
     final String TAG = ChannelActivity.class.getSimpleName();
@@ -71,40 +69,17 @@ public class ChannelActivity extends AppCompatActivity
         // set listeners
         binding.messageList.setMessageClickListener(this);
         binding.messageList.setMessageLongClickListener(this);
+        binding.messageList.setUserClickListener(this);
         binding.messageList.setAttachmentClickListener(this);
-        MyMessageViewHolderFactory factory = new MyMessageViewHolderFactory();
-        binding.messageList.setViewHolderFactory(factory);
         binding.messageInput.setOpenCameraViewListener(this);
 
-
+        binding.messageList.setViewHolderFactory(new MyMessageViewHolderFactory());
 
         // connect the view model
         binding.setViewModel(viewModel);
-        MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<String>());
-        channel.addEventHandler(new ChatChannelEventHandler() {
-            @Override
-            public void onTypingStart(Event event) {
-                List<String> typingCopy = currentlyTyping.getValue();
-                if (!typingCopy.contains(event.getUser().getName())) {
-                    typingCopy.add(event.getUser().getName());
-                }
-                currentlyTyping.postValue(typingCopy);
-            }
-
-            @Override
-            public void onTypingStop(Event event) {
-                List<String> typingCopy = currentlyTyping.getValue();
-                typingCopy.remove(event.getUser().getName());
-                currentlyTyping.postValue(typingCopy);
-            }
-        });
-        currentlyTyping.observe(this, users -> {
-            String typing = "nobody is typing";
-            if (!users.isEmpty()) {
-                typing = "typing: " + String.join(", ", users);
-            }
-            binding.setTyping(typing);
-        });
+        binding.channelHeader.setViewModel(viewModel, this);
+        binding.channelHeader.setHeaderOptionsClickListener(this);
+        binding.channelHeader.setHeaderAvatarGroupClickListener(this);
         binding.messageList.setViewModel(viewModel, this);
         binding.messageInput.setViewModel(viewModel, this);
     }
@@ -138,18 +113,22 @@ public class ChannelActivity extends AppCompatActivity
 
     @Override
     public void onMessageClick(Message message, int position) {
-        ReactionDialog reactionDialog = new ReactionDialog(this,
-                viewModel.getChannel(), message, position, binding.messageList, binding.messageList.getStyle());
-        reactionDialog.show();
+        new ReactionDialog(this)
+                .setChannel(viewModel.getChannel())
+                .setMessage(message)
+                .setMessagePosition(position)
+                .setRecyclerView(binding.messageList)
+                .setStyle(binding.messageList.getStyle())
+                .show();
     }
 
     @Override
     public void onMessageLongClick(Message message) {
-        MoreActionDialog moreActionDialog = new MoreActionDialog(this,
-                viewModel.getChannel(),
-                message,
-                binding.messageList.getStyle());
-        moreActionDialog.show();
+        new MoreActionDialog(this)
+                .setChannel(viewModel.getChannel())
+                .setMessage(message)
+                .setStyle(binding.messageList.getStyle())
+                .show();
     }
 
     @Override
@@ -158,4 +137,28 @@ public class ChannelActivity extends AppCompatActivity
 
     }
 
+    @Override
+    public void onHeaderOptionsClick(Channel channel) {
+        new AlertDialog.Builder(this)
+                .setTitle("Options for channel " + channel.getName())
+                .setMessage("You pressed on the options, well done")
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.stream_ic_settings)
+                .show();
+    }
+
+    @Override
+    public void onHeaderAvatarGroupClick(Channel channel) {
+        new AlertDialog.Builder(this)
+                .setTitle("Avatar group click for channel " + channel.getName())
+                .setMessage("You pressed on the avatar group, well done")
+                .setNegativeButton(android.R.string.no, null)
+                .setIcon(R.drawable.stream_ic_settings)
+                .show();
+    }
+
+    @Override
+    public void onUserClick(User user) {
+        // open your user profile
+    }
 }

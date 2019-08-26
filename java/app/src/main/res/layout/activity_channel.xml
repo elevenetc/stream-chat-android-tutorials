@@ -19,17 +19,13 @@
         android:layout_height="match_parent"
         tools:context="com.example.chattutorial.ChannelActivity">
 
-        <TextView
+        <com.getstream.sdk.chat.view.ChannelHeaderView
             android:id="@+id/channelHeader"
             android:layout_width="match_parent"
-            android:layout_height="31dp"
-            android:background="#CCC"
-            android:text="@{typing}"
-            android:gravity="center"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintEnd_toStartOf="@+id/messageList"
+            android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:streamChannelHeaderBackButtonShow="true" />
 
         <com.getstream.sdk.chat.view.MessageListView
             android:id="@+id/messageList"
@@ -42,10 +38,10 @@
             app:layout_constraintTop_toBottomOf="@+id/channelHeader"
 
             android:background="#f3f5f8"
-            app:messageTextColorMine="@color/white"
-            app:messageBackgroundColorMine="#70af74"
-            app:messageTextColorTheirs="#000"
-            app:messageBackgroundColorTheirs="@color/white"
+            app:streamMessageTextColorMine="#FFF"
+            app:streamMessageBackgroundColorMine="#70af74"
+            app:streamMessageTextColorTheirs="#000"
+            app:streamMessageBackgroundColorTheirs="#FFF"
             />
 
         <TextView
