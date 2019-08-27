@@ -8,6 +8,7 @@ import com.getstream.sdk.chat.adapter.MessageListItem
 import com.getstream.sdk.chat.model.Attachment
 import com.getstream.sdk.chat.utils.roundedImageView.PorterShapeImageView
 import com.getstream.sdk.chat.view.MessageListView
+import com.getstream.sdk.chat.view.MessageListViewStyle
 
 class AttachmentViewHolderImgur(resId: Int, parent: ViewGroup) :
     BaseAttachmentViewHolder(resId, parent) {
@@ -22,10 +23,11 @@ class AttachmentViewHolderImgur(resId: Int, parent: ViewGroup) :
         context: Context,
         messageListItem: MessageListItem,
         attachment: Attachment,
+        style: MessageListViewStyle,
         clickListener: MessageListView.AttachmentClickListener,
         longClickListener: MessageListView.MessageLongClickListener
     ) {
-        super.bind(context, messageListItem, attachment, clickListener, longClickListener)
+        super.bind(context, messageListItem, attachment, style, clickListener, longClickListener)
 
         val background = bubbleHelper.getDrawableForAttachment(
             messageListItem.message,

@@ -9,33 +9,18 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.example.chattutorial.databinding.ActivityChannelBinding
 import com.getstream.sdk.chat.StreamChat
-import com.getstream.sdk.chat.model.Attachment
 import com.getstream.sdk.chat.model.Channel
-import com.getstream.sdk.chat.rest.Message
 import com.getstream.sdk.chat.utils.Constant
 import com.getstream.sdk.chat.utils.PermissionChecker
-import com.getstream.sdk.chat.view.Dialog.MoreActionDialog
-import com.getstream.sdk.chat.view.Dialog.ReactionDialog
 import com.getstream.sdk.chat.view.MessageInputView
-import com.getstream.sdk.chat.view.MessageListView
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory
-import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import com.getstream.sdk.chat.model.Event
-
-
-
 
 /**
  * Show the messages for a channel
  */
-class ChannelActivity : AppCompatActivity(), MessageListView.MessageClickListener,
-    MessageListView.MessageLongClickListener, MessageListView.AttachmentClickListener,
+class ChannelActivity : AppCompatActivity(),
     MessageInputView.OpenCameraViewListener {
-
-    internal val TAG = ChannelActivity::class.java.simpleName
 
     private var viewModel: ChannelViewModel? = null
     private var binding: ActivityChannelBinding? = null
@@ -63,42 +48,14 @@ class ChannelActivity : AppCompatActivity(), MessageListView.MessageClickListene
         ).get(ChannelViewModel::class.java)
 
         // set listeners
-        binding!!.messageList.setMessageClickListener(this)
-        binding!!.messageList.setMessageLongClickListener(this)
-        binding!!.messageList.setAttachmentClickListener(this)
-        val factory = MyMessageViewHolderFactory()
-        binding!!.messageList.setViewHolderFactory(factory)
         binding!!.messageInput.setOpenCameraViewListener(this)
 
         // connect the view model
         binding!!.viewModel = viewModel
-        val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
-        channel.addEventHandler(object : ChatChannelEventHandler() {
-            override fun onTypingStart(event: Event) {
-                val typingCopy : MutableList<String>? = currentlyTyping.value!!.toMutableList()
-                if (!typingCopy!!.contains(event.getUser().getName())) {
-                    typingCopy.add(event.getUser().getName())
-                }
-                currentlyTyping.postValue(typingCopy)
-            }
-
-            override fun onTypingStop(event: Event) {
-                val typingCopy : MutableList<String>? = currentlyTyping.value!!.toMutableList()
-                typingCopy!!.remove(event.getUser().getName())
-                currentlyTyping.postValue(typingCopy)
-            }
-        })
-
-        val typingObserver = Observer<List<String>> { users ->
-            var typing: String = "nobody is typing"
-            if (!users.isEmpty()) {
-                typing = "typing: " + users.joinToString(", ")
-            }
-            binding!!.setTyping(typing)
-        }
-        currentlyTyping.observe(this,typingObserver)
+        binding!!.messageList.setViewHolderFactory(MyMessageViewHolderFactory())
         binding!!.messageList.setViewModel(viewModel!!, this)
         binding!!.messageInput.setViewModel(viewModel, this)
+        binding!!.channelHeader.setViewModel(viewModel, this)
     }
 
 
@@ -124,33 +81,6 @@ class ChannelActivity : AppCompatActivity(), MessageListView.MessageClickListene
 
     override fun openCameraView(intent: Intent, REQUEST_CODE: Int) {
         startActivityForResult(intent, REQUEST_CODE)
-    }
-
-    override fun onMessageClick(message: Message, position: Int) {
-        val reactionDialog = ReactionDialog(
-            this,
-            viewModel!!.channel,
-            message,
-            position,
-            binding!!.messageList,
-            binding!!.messageList.style
-        )
-        reactionDialog.show()
-    }
-
-    override fun onMessageLongClick(message: Message) {
-        val moreActionDialog = MoreActionDialog(
-            this,
-            viewModel!!.channel,
-            message,
-            binding!!.messageList.style
-        )
-        moreActionDialog.show()
-    }
-
-    override fun onAttachmentClick(message: Message, attachment: Attachment) {
-        binding!!.messageList.showAttachment(message, attachment)
-
     }
 
     companion object {

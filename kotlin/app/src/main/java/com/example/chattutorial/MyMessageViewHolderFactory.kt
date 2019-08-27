@@ -13,7 +13,7 @@ class MyMessageViewHolderFactory : MessageViewHolderFactory() {
     override fun getAttachmentViewType(
         message: Message?,
         mine: Boolean?,
-        position: MessageViewHolderFactory.Position?,
+        position: Position?,
         attachments: List<Attachment>?,
         attachment: Attachment
     ): Int {
