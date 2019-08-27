@@ -55,6 +55,7 @@ class ChannelActivity : AppCompatActivity(),
         binding!!.messageList.setViewHolderFactory(MyMessageViewHolderFactory())
         binding!!.messageList.setViewModel(viewModel!!, this)
         binding!!.messageInput.setViewModel(viewModel, this)
+        binding!!.channelHeader.setViewModel(viewModel, this)
     }
 
 
