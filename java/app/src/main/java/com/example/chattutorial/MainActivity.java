@@ -1,6 +1,5 @@
 package com.example.chattutorial;
 
-import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,9 +16,10 @@ import com.getstream.sdk.chat.viewmodel.ChannelListViewModel;
 import java.util.HashMap;
 
 import static com.getstream.sdk.chat.enums.Filters.and;
-import static com.getstream.sdk.chat.enums.Filters.eq;
 import static com.getstream.sdk.chat.enums.Filters.in;
+import static com.getstream.sdk.chat.enums.Filters.eq;
 
+import android.content.Intent;
 
 /**
  * This activity shows a list of channels
@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        String UserID = "throbbing-voice-2";
+
         // setup the client using the example API key
         // normal you would call init in your Application class and not the activity
         StreamChat.init("b67pax5b2wdq", this.getApplicationContext());
@@ -40,9 +40,9 @@ public class MainActivity extends AppCompatActivity {
         HashMap<String, Object> extraData = new HashMap<>();
         extraData.put("name", "Paranoid Android");
         extraData.put("image", "https://bit.ly/2TIt8NR");
-        User currentUser = new User(UserID, extraData);
+        User currentUser = new User("twilight-lab-0", extraData);
         // User token is typically provided by your server when the user authenticates
-        client.setUser(currentUser, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidGhyb2JiaW5nLXZvaWNlLTIifQ.OCfIKqpZwqzZgYPVozOzwSZSFtTcDb-xKEQ-CW3ABPY");
+        client.setUser(currentUser, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidHdpbGlnaHQtbGFiLTAifQ.OI_QhLxh8uT8Ug6wRav-80_pkdZzKKBRyNAfXp4aHKY");
 
         // we're using data binding in this example
         ActivityMainBinding binding =
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
         binding.channelList.setViewModel(viewModel, this);
 
         // query all channels of type messaging
-        FilterObject filter = and(eq("type", "messaging"), in("members", UserID));
+        FilterObject filter = and(eq("type", "messaging"), in("members", "twilight-lab-0"));
         viewModel.setChannelFilter(filter);
 
         // click handlers for clicking a user avatar or channel

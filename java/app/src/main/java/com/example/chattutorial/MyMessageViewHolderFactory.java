@@ -30,7 +30,6 @@ public class MyMessageViewHolderFactory extends MessageViewHolderFactory {
             holder = super.createAttachmentViewHolder(adapter, parent, viewType);
         }
 
-
         return holder;
     }
 }
