@@ -15,7 +15,6 @@
         android:layout_height="match_parent"
         tools:context="com.example.chattutorial.MainActivity">
 
-
         <com.getstream.sdk.chat.view.ChannelListView
             android:id="@+id/channelList"
             android:layout_width="match_parent"

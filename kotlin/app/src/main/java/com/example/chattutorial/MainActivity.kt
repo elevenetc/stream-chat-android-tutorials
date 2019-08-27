@@ -11,30 +11,27 @@ import com.getstream.sdk.chat.rest.User
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
 import java.util.*
 
-
 /**
  * This activity shows a list of channels
  */
 class MainActivity : AppCompatActivity() {
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
 
-
         super.onCreate(savedInstanceState)
-        val UserID = "paranoid-android"
+
         // setup the client using the example API key
-        // normal you would call init in your Application class and not the activity
-        StreamChat.init("qk4nn7rpcn75", this.applicationContext)
+        // normally you would call init in your Application class and not the activity
+        StreamChat.init("b67pax5b2wdq", this.applicationContext)
         val client = StreamChat.getInstance(this.application)
         val extraData = HashMap<String, Any>()
         extraData["name"] = "Paranoid Android"
         extraData["image"] = "https://bit.ly/2TIt8NR"
-        val currentUser = User(UserID, extraData)
+        val currentUser = User("summer-brook-2", extraData)
         // User token is typically provided by your server when the user authenticates
         client.setUser(
             currentUser,
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoicGFyYW5vaWQtYW5kcm9pZCJ9.zrhwtQei0wNyvDsX8kBNctvLVg7-OQLH1oB4oc0tc5c"
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic3VtbWVyLWJyb29rLTIifQ.CzyOx8kgrc61qVbzWvhV1WD3KPEo5ZFZH-326hIdKz0"
         )
 
         // we're using data binding in this example
@@ -49,7 +46,7 @@ class MainActivity : AppCompatActivity() {
         binding.channelList.setViewModel(viewModel, this)
 
         // query all channels of type messaging
-        val filter = and(eq("type", "messaging"), `in`("members", UserID))
+        val filter = `and`(`eq`("type", "messaging"), `in`("members", "summer-brook-2"))
         viewModel.setChannelFilter(filter)
 
         // click handlers for clicking a user avatar or channel
@@ -63,5 +60,4 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
-
 }

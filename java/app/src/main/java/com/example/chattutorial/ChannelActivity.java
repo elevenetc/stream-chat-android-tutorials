@@ -88,7 +88,7 @@ public class ChannelActivity extends AppCompatActivity
             }
             binding.setTyping(typing);
         });
-        
+
         binding.messageList.setViewModel(viewModel, this);
         binding.messageInput.setViewModel(viewModel, this);
     }

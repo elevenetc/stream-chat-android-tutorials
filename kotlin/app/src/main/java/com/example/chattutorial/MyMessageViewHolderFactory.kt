@@ -13,7 +13,7 @@ class MyMessageViewHolderFactory : MessageViewHolderFactory() {
     override fun getAttachmentViewType(
         message: Message?,
         mine: Boolean?,
-        position: Position?,
+        position: MessageViewHolderFactory.Position?,
         attachments: List<Attachment>?,
         attachment: Attachment
     ): Int {
@@ -33,7 +33,6 @@ class MyMessageViewHolderFactory : MessageViewHolderFactory() {
         } else {
             holder = super.createAttachmentViewHolder(adapter, parent, viewType)
         }
-
 
         return holder
     }

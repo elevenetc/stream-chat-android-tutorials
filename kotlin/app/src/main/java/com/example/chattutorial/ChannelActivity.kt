@@ -6,6 +6,8 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.example.chattutorial.databinding.ActivityChannelBinding
 import com.getstream.sdk.chat.StreamChat
@@ -15,6 +17,9 @@ import com.getstream.sdk.chat.utils.PermissionChecker
 import com.getstream.sdk.chat.view.MessageInputView
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory
+import com.getstream.sdk.chat.model.Event;
+import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler;
+import java.util.ArrayList;
 
 /**
  * Show the messages for a channel
@@ -52,10 +57,37 @@ class ChannelActivity : AppCompatActivity(),
 
         // connect the view model
         binding!!.viewModel = viewModel
-        binding!!.messageList.setViewHolderFactory(MyMessageViewHolderFactory())
+        val factory = MyMessageViewHolderFactory()
+        binding!!.messageList.setViewHolderFactory(factory)
         binding!!.messageList.setViewModel(viewModel!!, this)
         binding!!.messageInput.setViewModel(viewModel, this)
-        binding!!.channelHeader.setViewModel(viewModel, this)
+
+        val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
+        channel.addEventHandler(object : ChatChannelEventHandler() {
+            override fun onTypingStart(event: Event) {
+                val typingCopy : MutableList<String>? = currentlyTyping.value!!.toMutableList()
+                if (!typingCopy!!.contains(event.getUser().getName())) {
+                    typingCopy.add(event.getUser().getName())
+                }
+                currentlyTyping.postValue(typingCopy)
+            }
+
+            override fun onTypingStop(event: Event) {
+                val typingCopy : MutableList<String>? = currentlyTyping.value!!.toMutableList()
+                typingCopy!!.remove(event.getUser().getName())
+                currentlyTyping.postValue(typingCopy)
+            }
+        })
+
+        val typingObserver = Observer<List<String>> { users ->
+            var typing: String = "nobody is typing"
+            if (!users.isEmpty()) {
+                typing = "typing: " + users.joinToString(", ")
+            }
+            binding!!.setTyping(typing)
+        }
+        currentlyTyping.observe(this,typingObserver)
+
     }
 
 
