@@ -6,7 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProviders
 import com.example.chattutorial.databinding.ActivityMainBinding
 import com.getstream.sdk.chat.StreamChat
-import com.getstream.sdk.chat.enums.Filters.`in`
+import com.getstream.sdk.chat.enums.Filters.*
 import com.getstream.sdk.chat.rest.User
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
 import java.util.*
@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
 
 
         super.onCreate(savedInstanceState)
-
+        val UserID = "paranoid-android"
         // setup the client using the example API key
         // normal you would call init in your Application class and not the activity
         StreamChat.init("qk4nn7rpcn75", this.applicationContext)
@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val extraData = HashMap<String, Any>()
         extraData["name"] = "Paranoid Android"
         extraData["image"] = "https://bit.ly/2TIt8NR"
-        val currentUser = User("paranoid-android", extraData)
+        val currentUser = User(UserID, extraData)
         // User token is typically provided by your server when the user authenticates
         client.setUser(
             currentUser,
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         binding.channelList.setViewModel(viewModel, this)
 
         // query all channels of type messaging
-        val filter = `in`("type", "messaging")
+        val filter = and(eq("type", "messaging"), `in`("members", UserID))
         viewModel.setChannelFilter(filter)
 
         // click handlers for clicking a user avatar or channel
@@ -63,6 +63,5 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
-
 
 }
