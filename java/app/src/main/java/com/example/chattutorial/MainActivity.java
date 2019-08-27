@@ -16,6 +16,8 @@ import com.getstream.sdk.chat.viewmodel.ChannelListViewModel;
 
 import java.util.HashMap;
 
+import static com.getstream.sdk.chat.enums.Filters.and;
+import static com.getstream.sdk.chat.enums.Filters.eq;
 import static com.getstream.sdk.chat.enums.Filters.in;
 
 
@@ -31,17 +33,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         super.onCreate(savedInstanceState);
-
+        String UserID = "throbbing-voice-2";
         // setup the client using the example API key
         // normal you would call init in your Application class and not the activity
-        StreamChat.init("qk4nn7rpcn75", this.getApplicationContext());
+        StreamChat.init("b67pax5b2wdq", this.getApplicationContext());
         Client client = StreamChat.getInstance(this.getApplication());
         HashMap<String, Object> extraData = new HashMap<>();
         extraData.put("name", "Paranoid Android");
         extraData.put("image", "https://bit.ly/2TIt8NR");
-        User currentUser = new User("paranoid-android", extraData);
+        User currentUser = new User(UserID, extraData);
         // User token is typically provided by your server when the user authenticates
-        client.setUser(currentUser, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoicGFyYW5vaWQtYW5kcm9pZCJ9.zrhwtQei0wNyvDsX8kBNctvLVg7-OQLH1oB4oc0tc5c");
+        client.setUser(currentUser, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidGhyb2JiaW5nLXZvaWNlLTIifQ.OCfIKqpZwqzZgYPVozOzwSZSFtTcDb-xKEQ-CW3ABPY");
 
         // we're using data binding in this example
         ActivityMainBinding binding =
@@ -55,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         binding.channelList.setViewModel(viewModel, this);
 
         // query all channels of type messaging
-        FilterObject filter = in("type", "messaging");
+        FilterObject filter = and(eq("type", "messaging"), in("members", UserID));
         viewModel.setChannelFilter(filter);
 
         // click handlers for clicking a user avatar or channel
