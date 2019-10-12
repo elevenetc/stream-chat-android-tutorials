@@ -44,7 +44,7 @@ class ChannelActivity : AppCompatActivity(),
         // most the business logic of the chat is handled in the ChannelViewModel view model
         binding!!.lifecycleOwner = this
 
-        var channel = client.getChannelByCid("$channelType:$channelID")
+        var channel = client.channel("$channelType:$channelID")
         if (channel == null)
             channel = client.channel(channelType, channelID)
         viewModel = ViewModelProviders.of(

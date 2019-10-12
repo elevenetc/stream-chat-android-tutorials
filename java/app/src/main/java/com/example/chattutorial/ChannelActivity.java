@@ -3,6 +3,7 @@ package com.example.chattutorial;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -49,7 +50,7 @@ public class ChannelActivity extends AppCompatActivity
         // most the business logic of the chat is handled in the ChannelViewModel view model
         binding.setLifecycleOwner(this);
 
-        Channel channel = client.getChannelByCid(channelType + ":" + channelID);
+        Channel channel = client.channel(channelType, channelID);
         if (channel == null)
             channel = client.channel(channelType, channelID);
         viewModel = ViewModelProviders.of(this,
@@ -84,7 +85,7 @@ public class ChannelActivity extends AppCompatActivity
         currentlyTyping.observe(this, users -> {
             String typing = "nobody is typing";
             if (!users.isEmpty()) {
-                typing = "typing: " + String.join(", ", users);
+                typing = "typing: " + TextUtils.join(", ", users);
             }
             binding.setTyping(typing);
         });

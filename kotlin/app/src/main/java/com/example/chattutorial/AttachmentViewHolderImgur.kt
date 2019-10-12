@@ -3,7 +3,7 @@ package com.example.chattutorial
 import android.content.Context
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-import com.getstream.sdk.chat.BaseAttachmentViewHolder
+import com.getstream.sdk.chat.adapter.BaseAttachmentViewHolder
 import com.getstream.sdk.chat.adapter.MessageListItem
 import com.getstream.sdk.chat.model.Attachment
 import com.getstream.sdk.chat.utils.roundedImageView.PorterShapeImageView
