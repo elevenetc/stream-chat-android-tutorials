@@ -3,12 +3,13 @@ package com.example.chattutorial
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.chattutorial.databinding.ActivityMainBinding
 import com.getstream.sdk.chat.StreamChat
 import com.getstream.sdk.chat.enums.Filters.*
 import com.getstream.sdk.chat.rest.User
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
+import com.getstream.sdk.chat.viewmodel.ChannelViewModel
 import java.util.*
 
 /**
@@ -41,23 +42,24 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         // most the business logic for chat is handled in the ChannelListViewModel view model
-        val viewModel = ViewModelProviders.of(this).get(ChannelListViewModel::class.java)
+        val viewModel = ViewModelProvider(this).get(ChannelListViewModel::class.java)
+
         binding.viewModel = viewModel
         binding.channelList.setViewModel(viewModel, this)
 
         // query all channels of type messaging
-        val filter = `and`(`eq`("type", "messaging"), `in`("members", "summer-brook-2"))
+        val filter = and(eq("type", "messaging"), `in`("members", "summer-brook-2"))
         viewModel.setChannelFilter(filter)
 
         // click handlers for clicking a user avatar or channel
-        binding.channelList.setOnChannelClickListener({ channel ->
+        binding.channelList.setOnChannelClickListener { channel ->
             // open the channel activity
             val intent = ChannelActivity.newIntent(this, channel)
             startActivity(intent)
-        })
-        binding.channelList.setOnUserClickListener({ user ->
+        }
+        binding.channelList.setOnUserClickListener { user ->
             // open your user profile
-        })
+        }
 
     }
 }

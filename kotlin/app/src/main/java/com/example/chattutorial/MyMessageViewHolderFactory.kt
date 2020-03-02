@@ -13,7 +13,7 @@ class MyMessageViewHolderFactory : MessageViewHolderFactory() {
     override fun getAttachmentViewType(
         message: Message?,
         mine: Boolean?,
-        position: MessageViewHolderFactory.Position?,
+        position: Position?,
         attachments: List<Attachment>?,
         attachment: Attachment
     ): Int {
@@ -38,6 +38,6 @@ class MyMessageViewHolderFactory : MessageViewHolderFactory() {
     }
 
     companion object {
-        private val IMGUR_TYPE = 0
+        private const val IMGUR_TYPE = 0
     }
 }

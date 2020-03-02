@@ -17,12 +17,7 @@ import com.getstream.sdk.chat.view.MessageListViewStyle
 
 class AttachmentViewHolderImgur(resId: Int, parent: ViewGroup) :
     AttachmentViewHolder(resId, parent) {
-    private val iv_media_thumb: PorterShapeImageView
-
-    init {
-
-        iv_media_thumb = itemView.findViewById(R.id.iv_media_thumb)
-    }
+    private val ivMediaThumb: PorterShapeImageView = itemView.findViewById(R.id.iv_media_thumb)
 
     override fun bind(
         context: Context,
@@ -41,10 +36,10 @@ class AttachmentViewHolderImgur(resId: Int, parent: ViewGroup) :
             messageListItem.positions,
             attachment
         )
-        iv_media_thumb.setShape(context, background)
+        ivMediaThumb.setShape(context, background)
 
         Glide.with(context)
             .load(attachment.thumbURL)
-            .into(iv_media_thumb)
+            .into(ivMediaThumb)
     }
 }

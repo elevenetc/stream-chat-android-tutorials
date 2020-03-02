@@ -24,8 +24,7 @@ import java.util.ArrayList
  */
 class ChannelActivity : AppCompatActivity() {
 
-    private var viewModel: ChannelViewModel? = null
-    private var binding: ActivityChannelBinding? = null
+    private lateinit var binding: ActivityChannelBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,20 +38,18 @@ class ChannelActivity : AppCompatActivity() {
         // we're using data binding in this example
         binding = DataBindingUtil.setContentView(this, R.layout.activity_channel)
         // most the business logic of the chat is handled in the ChannelViewModel view model
-        binding!!.lifecycleOwner = this
+        binding.lifecycleOwner = this
 
-        var channel = client.channel(channelType, channelID)
+        val channel = client.channel(channelType, channelID)
         val viewModelFactory = ChannelViewModelFactory(application, channel)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(ChannelViewModel::class.java)
 
-
-
         // connect the view model
-        binding!!.viewModel = viewModel
+        binding.viewModel = viewModel
         val factory = MyMessageViewHolderFactory()
-        binding!!.messageList.setViewHolderFactory(factory)
-        binding!!.messageList.setViewModel(viewModel!!, this)
-        binding!!.messageInput.setViewModel(viewModel, this)
+        binding.messageList.setViewHolderFactory(factory)
+        binding.messageList.setViewModel(viewModel, this)
+        binding.messageInput.setViewModel(viewModel, this)
 
         val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
         channel.addEventHandler(object : ChatChannelEventHandler() {
@@ -72,11 +69,11 @@ class ChannelActivity : AppCompatActivity() {
         })
 
         val typingObserver = Observer<List<String>> { users ->
-            var typing: String = "nobody is typing"
-            if (!users.isEmpty()) {
+            var typing = "nobody is typing"
+            if (users.isNotEmpty()) {
                 typing = "typing: " + users.joinToString(", ")
             }
-            binding!!.setTyping(typing)
+            binding.typing = typing
         }
         currentlyTyping.observe(this,typingObserver)
 
@@ -85,8 +82,8 @@ class ChannelActivity : AppCompatActivity() {
 
     companion object {
 
-        private val EXTRA_CHANNEL_TYPE = "com.example.chattutorial.CHANNEL_TYPE"
-        private val EXTRA_CHANNEL_ID = "com.example.chattutorial.CHANNEL_ID"
+        private const val EXTRA_CHANNEL_TYPE = "com.example.chattutorial.CHANNEL_TYPE"
+        private const val EXTRA_CHANNEL_ID = "com.example.chattutorial.CHANNEL_ID"
 
         fun newIntent(context: Context, channel: Channel): Intent {
             val intent = Intent(context, ChannelActivity::class.java)
