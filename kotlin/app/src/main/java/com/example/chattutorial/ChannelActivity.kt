@@ -46,6 +46,7 @@ class ChannelActivity : AppCompatActivity() {
         val viewModel = ViewModelProvider(this, viewModelFactory).get(ChannelViewModel::class.java)
 
 
+
         // connect the view model
         binding!!.viewModel = viewModel
         val factory = MyMessageViewHolderFactory()

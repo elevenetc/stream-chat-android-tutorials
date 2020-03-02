@@ -8,7 +8,6 @@ import com.getstream.sdk.chat.rest.Message
 import android.content.Context
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
-
 import com.getstream.sdk.chat.adapter.MessageListItem
 import com.getstream.sdk.chat.model.Attachment
 import com.getstream.sdk.chat.utils.roundedImageView.PorterShapeImageView
