@@ -11,20 +11,23 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.chattutorial.databinding.ActivityChannelBinding
 import com.getstream.sdk.chat.StreamChat
 import com.getstream.sdk.chat.model.Channel
+import com.getstream.sdk.chat.model.Event
+import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler
+import com.getstream.sdk.chat.utils.PermissionChecker
+import com.getstream.sdk.chat.view.MessageInputView.PermissionRequestListener
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory
-import com.getstream.sdk.chat.model.Event;
-import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler;
-import java.util.ArrayList
+import java.util.*
 
 
 /**
  * Show the messages for a channel
  *
  */
-class ChannelActivity : AppCompatActivity() {
+class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
 
     private lateinit var binding: ActivityChannelBinding
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +53,8 @@ class ChannelActivity : AppCompatActivity() {
         binding.messageList.setViewHolderFactory(factory)
         binding.messageList.setViewModel(viewModel, this)
         binding.messageInput.setViewModel(viewModel, this)
+        // If you are using own MessageInputView please comment this line.
+        binding.messageInput.setPermissionRequestListener(this)
 
         val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
         channel.addEventHandler(object : ChatChannelEventHandler() {
@@ -77,6 +82,29 @@ class ChannelActivity : AppCompatActivity() {
         }
         currentlyTyping.observe(this,typingObserver)
 
+    }
+
+    override fun onActivityResult(
+        requestCode: Int,
+        resultCode: Int,
+        data: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, data)
+        // If you are using own MessageInputView please comment this line.
+        binding.messageInput.captureMedia(requestCode, resultCode, data)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>,
+        grantResults: IntArray
+    ) { // If you are using own MessageInputView please comment this line.
+        binding.messageInput.permissionResult(requestCode, permissions, grantResults)
+    }
+
+    override fun openPermissionRequest() {
+        PermissionChecker.permissionCheck(this, null)
+        // If you are writing a Channel Screen in a Fragment, use the code below instead of the code above.
+        // PermissionChecker.permissionCheck(getActivity(), this);
     }
 
 
