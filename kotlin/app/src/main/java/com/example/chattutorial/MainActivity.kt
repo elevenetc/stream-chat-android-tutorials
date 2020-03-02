@@ -9,7 +9,6 @@ import com.getstream.sdk.chat.StreamChat
 import com.getstream.sdk.chat.enums.Filters.*
 import com.getstream.sdk.chat.rest.User
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
-import com.getstream.sdk.chat.viewmodel.ChannelViewModel
 import java.util.*
 
 /**

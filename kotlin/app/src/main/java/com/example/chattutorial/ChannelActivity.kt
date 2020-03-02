@@ -59,16 +59,18 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
         channel.addEventHandler(object : ChatChannelEventHandler() {
             override fun onTypingStart(event: Event) {
-                val typingCopy : MutableList<String>? = currentlyTyping.value!!.toMutableList()
-                if (!typingCopy!!.contains(event.getUser().getName())) {
-                    typingCopy.add(event.getUser().getName())
+                val typing = currentlyTyping.value ?: listOf()
+                val typingCopy : MutableList<String> = typing.toMutableList()
+                if (typingCopy.contains(event.user.name).not()) {
+                    typingCopy.add(event.user.name)
                 }
                 currentlyTyping.postValue(typingCopy)
             }
 
             override fun onTypingStop(event: Event) {
-                val typingCopy : MutableList<String>? = currentlyTyping.value!!.toMutableList()
-                typingCopy!!.remove(event.getUser().getName())
+                val typing = currentlyTyping.value ?: listOf()
+                val typingCopy : MutableList<String> = typing.toMutableList()
+                typingCopy.remove(event.user.name)
                 currentlyTyping.postValue(typingCopy)
             }
         })
