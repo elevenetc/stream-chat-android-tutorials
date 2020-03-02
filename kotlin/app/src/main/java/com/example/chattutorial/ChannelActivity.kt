@@ -2,30 +2,27 @@ package com.example.chattutorial
 
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.ViewModelProvider
 import com.example.chattutorial.databinding.ActivityChannelBinding
 import com.getstream.sdk.chat.StreamChat
 import com.getstream.sdk.chat.model.Channel
-import com.getstream.sdk.chat.utils.Constant
-import com.getstream.sdk.chat.utils.PermissionChecker
-import com.getstream.sdk.chat.view.MessageInputView
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory
 import com.getstream.sdk.chat.model.Event;
 import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler;
-import java.util.ArrayList;
+import java.util.ArrayList
+
 
 /**
  * Show the messages for a channel
+ *
  */
-class ChannelActivity : AppCompatActivity(),
-    MessageInputView.OpenCameraViewListener {
+class ChannelActivity : AppCompatActivity() {
 
     private var viewModel: ChannelViewModel? = null
     private var binding: ActivityChannelBinding? = null
@@ -44,16 +41,10 @@ class ChannelActivity : AppCompatActivity(),
         // most the business logic of the chat is handled in the ChannelViewModel view model
         binding!!.lifecycleOwner = this
 
-        var channel = client.getChannelByCid("$channelType:$channelID")
-        if (channel == null)
-            channel = client.channel(channelType, channelID)
-        viewModel = ViewModelProviders.of(
-            this,
-            ChannelViewModelFactory(this.application, channel)
-        ).get(ChannelViewModel::class.java)
+        var channel = client.channel(channelType, channelID)
+        val viewModelFactory = ChannelViewModelFactory(application, channel)
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(ChannelViewModel::class.java)
 
-        // set listeners
-        binding!!.messageInput.setOpenCameraViewListener(this)
 
         // connect the view model
         binding!!.viewModel = viewModel
@@ -90,30 +81,6 @@ class ChannelActivity : AppCompatActivity(),
 
     }
 
-
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        binding!!.messageInput.progressCapturedMedia(requestCode, resultCode, data)
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int, permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        if (requestCode == Constant.PERMISSIONS_REQUEST) {
-            var granted = true
-            for (grantResult in grantResults)
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    granted = false
-                    break
-                }
-            if (!granted) PermissionChecker.showRationalDialog(this, null)
-        }
-    }
-
-    override fun openCameraView(intent: Intent, REQUEST_CODE: Int) {
-        startActivityForResult(intent, REQUEST_CODE)
-    }
 
     companion object {
 
