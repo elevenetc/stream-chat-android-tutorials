@@ -4,39 +4,36 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.view.ViewGroup;
 
-import com.getstream.sdk.chat.adapter.BaseAttachmentViewHolder;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.getstream.sdk.chat.adapter.AttachmentViewHolder;
 import com.getstream.sdk.chat.adapter.MessageListItem;
 import com.getstream.sdk.chat.model.Attachment;
+import com.getstream.sdk.chat.rest.Message;
 import com.getstream.sdk.chat.utils.roundedImageView.PorterShapeImageView;
 import com.getstream.sdk.chat.view.MessageListView;
 import com.bumptech.glide.Glide;
 import com.getstream.sdk.chat.view.MessageListViewStyle;
 
-public class AttachmentViewHolderImgur extends BaseAttachmentViewHolder {
+public class AttachmentViewHolderImgur extends AttachmentViewHolder {
     private PorterShapeImageView iv_media_thumb;
 
-    public AttachmentViewHolderImgur(int resId, ViewGroup parent) {
+    AttachmentViewHolderImgur(int resId, ViewGroup parent) {
         super(resId, parent);
 
         iv_media_thumb = itemView.findViewById(R.id.iv_media_thumb);
     }
 
     @Override
-    public void bind(Context context,
-                     MessageListItem messageListItem,
-                     Attachment attachment,
-                     MessageListViewStyle style,
-                     MessageListView.AttachmentClickListener clickListener,
-                     MessageListView.MessageLongClickListener longClickListener) {
-        super.bind(context, messageListItem, attachment,style, clickListener, longClickListener);
-
-        Drawable background = getBubbleHelper().getDrawableForAttachment(messageListItem.getMessage(), messageListItem.isMine(), messageListItem.getPositions(), attachment);
+    public void bind(@NonNull Context context, @NonNull MessageListItem messageListItem, @NonNull Message message, @NonNull Attachment attachment, @NonNull MessageListViewStyle style, @NonNull MessageListView.BubbleHelper bubbleHelper, @Nullable MessageListView.AttachmentClickListener clickListener, @Nullable MessageListView.MessageLongClickListener longClickListener) {
+        super.bind(context, messageListItem, message, attachment, style, bubbleHelper, clickListener, longClickListener);
+        Drawable background = bubbleHelper.getDrawableForAttachment(messageListItem.getMessage(), messageListItem.isMine(), messageListItem.getPositions(), attachment);
         iv_media_thumb.setShape(context, background);
-        iv_media_thumb.setOnClickListener(this);
-        iv_media_thumb.setOnLongClickListener(this);
 
         Glide.with(context)
                 .load(attachment.getThumbURL())
                 .into(iv_media_thumb);
     }
+
 }

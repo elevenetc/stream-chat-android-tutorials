@@ -53,6 +53,7 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         binding.messageList.setViewHolderFactory(factory)
         binding.messageList.setViewModel(viewModel, this)
         binding.messageInput.setViewModel(viewModel, this)
+        // binding.channelHeader.setViewModel(viewModel, this)
         // If you are using own MessageInputView please comment this line.
         binding.messageInput.setPermissionRequestListener(this)
 
