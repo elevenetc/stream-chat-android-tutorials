@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chattutorial.databinding.ActivityChannelBinding;
@@ -30,7 +31,7 @@ import java.util.List;
  * Show the messages for a channel
  */
 public class ChannelActivity extends AppCompatActivity
-        implements MessageInputView.OpenCameraViewListener {
+        implements MessageInputView.PermissionRequestListener {
 
     private ChannelViewModel viewModel;
     private ActivityChannelBinding binding;
@@ -51,14 +52,8 @@ public class ChannelActivity extends AppCompatActivity
         binding.setLifecycleOwner(this);
 
         Channel channel = client.channel(channelType, channelID);
-        if (channel == null)
-            channel = client.channel(channelType, channelID);
-        viewModel = ViewModelProviders.of(this,
-                new ChannelViewModelFactory(this.getApplication(), channel)
-        ).get(ChannelViewModel.class);
-
-        // set listeners
-        binding.messageInput.setOpenCameraViewListener(this);
+        ChannelViewModelFactory viewModelFactory = new ChannelViewModelFactory(this.getApplication(), channel);
+        viewModel = new ViewModelProvider(this, viewModelFactory).get(ChannelViewModel.class);
 
         // connect the view model
         binding.setViewModel(viewModel);
@@ -97,25 +92,19 @@ public class ChannelActivity extends AppCompatActivity
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        binding.messageInput.progressCapturedMedia(requestCode, resultCode, data);
+        // If you are using own MessageInputView please comment this line.
+        binding.messageInput.captureMedia(requestCode, resultCode, data);
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
-        if (requestCode == Constant.PERMISSIONS_REQUEST) {
-            boolean granted = true;
-            for (int grantResult : grantResults)
-                if (grantResult != PackageManager.PERMISSION_GRANTED) {
-                    granted = false;
-                    break;
-                }
-            if (!granted) PermissionChecker.showRationalDialog(this, null);
-        }
+        // If you are using own MessageInputView please comment this line.
+        binding.messageInput.permissionResult(requestCode, permissions, grantResults);
     }
 
     @Override
-    public void openCameraView(Intent intent, int REQUEST_CODE) {
-        startActivityForResult(intent, REQUEST_CODE);
+    public void openPermissionRequest() {
+        PermissionChecker.permissionCheck(this, null);
     }
 }
