@@ -15,7 +15,7 @@ public class MyMessageViewHolderFactory extends MessageViewHolderFactory {
 
     @Override
     public int getAttachmentViewType(Message message, Boolean mine, Position position, List<Attachment> attachments, Attachment attachment) {
-        if (attachment.getImageURL() != null && attachment.getImageURL().indexOf("imgur") != -1) {
+        if (attachment.getImageURL() != null && attachment.getImageURL().contains("imgur")) {
             return IMGUR_TYPE;
         }
         return super.getAttachmentViewType(message, mine, position, attachments, attachment);
