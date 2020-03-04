@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chattutorial.databinding.ActivityMainBinding;
@@ -51,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         binding.setLifecycleOwner(this);
 
         // most the business logic for chat is handled in the ChannelListViewModel view model
-        ChannelListViewModel viewModel = ViewModelProviders.of(this).get(ChannelListViewModel.class);
+        ChannelListViewModel viewModel = new ViewModelProvider(this).get(ChannelListViewModel.class);
         binding.setViewModel(viewModel);
         binding.channelList.setViewModel(viewModel, this);
 
