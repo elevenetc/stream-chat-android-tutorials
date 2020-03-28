@@ -7,19 +7,20 @@ import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.chattutorial.databinding.ActivityMainBinding;
-import com.getstream.sdk.chat.enums.FilterObject;
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel;
 
 
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+import io.getstream.chat.android.client.models.Filters;
 
 import io.getstream.chat.android.client.ChatClient;
 import io.getstream.chat.android.client.errors.ChatError;
 import io.getstream.chat.android.client.logger.ChatLogLevel;
 import io.getstream.chat.android.client.models.User;
 import io.getstream.chat.android.client.socket.InitConnectionListener;
+import io.getstream.chat.android.client.utils.FilterObject;
 
 /**
  * This activity shows a list of channels
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         binding.channelList.setViewModel(viewModel, this);
 
         // query all channels of type messaging
-        FilterObject filter = and(eq("type", "messaging"), in("members", "twilight-lab-0"));
+        FilterObject filter = Filters.INSTANCE.and(Filters.INSTANCE.eq("type", "messaging"), Filters.INSTANCE.in("members", "twilight-lab-0"));
         viewModel.setChannelFilter(filter);
 
         // click handlers for clicking a user avatar or channel

@@ -24,6 +24,8 @@ import io.getstream.chat.android.client.ChatClient;
 import io.getstream.chat.android.client.controllers.ChannelController;
 import io.getstream.chat.android.client.events.ChatEvent;
 import io.getstream.chat.android.client.utils.observable.Subscription;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Show the messages for a channel
@@ -42,7 +44,7 @@ public class ChannelActivity extends AppCompatActivity
         Intent intent = getIntent();
         String channelType = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_TYPE);
         String channelId = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_ID);
-        ChatClient client = ChatClient.instance();
+        ChatClient client = ChatClient.Companion.instance();
         ChannelController channel = client.channel(channelType, channelId);
 
         // we're using data binding in this example
@@ -59,7 +61,12 @@ public class ChannelActivity extends AppCompatActivity
 
         MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<>());
         // TODO: how to listen to events in java?
-        channel.events().subscribe()
+        channel.events().subscribe(new Function1<ChatEvent, Unit>() {
+            @Override
+            public Unit invoke(ChatEvent event) {
+                return null;
+            }
+        });
         currentlyTyping.observe(this, users -> {
             String typing = "nobody is typing";
             if (!users.isEmpty()) {
