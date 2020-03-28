@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         binding.channelList.setViewModel(viewModel, this)
 
         // query all channels of type messaging
-        val filter = and(eq("type", "messaging"), `in`("members", "summer-brook-2"))
+        val filter = and(eq("type", "messaging"), `in`("members", user.id))
         viewModel.setChannelFilter(filter)
 
         // click handlers for clicking a user avatar or channel
