@@ -39,9 +39,8 @@ public class MainActivity extends AppCompatActivity {
                 ChatLogLevel.ALL).build();
 
         User user = new User("summer-brook-2");
-        // TODO: how to write to extra data?
-        user.extraData["name"] = "Paranoid Android";
-        user.extraData["image"] = "https://bit.ly/2TIt8NR";
+        user.getExtraData().put("name", "Paranoid Android");
+        user.getExtraData().put("image", "https://bit.ly/2TIt8NR");
         // User token is typically provided by your server when the user authenticates
         String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic3VtbWVyLWJyb29rLTIifQ.CzyOx8kgrc61qVbzWvhV1WD3KPEo5ZFZH-326hIdKz0";
         client.setUser(user, token, new InitConnectionListener() {
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(EXTRA_CHANNEL_ID, channel.getId());
             startActivity(intent);
         });
-        binding.channelList.setOnUserClickListener(user -> {
+        binding.channelList.setOnUserClickListener(theUser -> {
             // open your user profile
         });
 

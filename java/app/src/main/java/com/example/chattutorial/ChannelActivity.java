@@ -9,25 +9,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chattutorial.databinding.ActivityChannelBinding;
-import com.getstream.sdk.chat.StreamChat;
-import com.getstream.sdk.chat.model.Channel;
-import com.getstream.sdk.chat.rest.core.Client;
-import com.getstream.sdk.chat.utils.Constant;
 import com.getstream.sdk.chat.utils.PermissionChecker;
 import com.getstream.sdk.chat.view.MessageInputView;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory;
 
 import androidx.lifecycle.MutableLiveData;
-import com.getstream.sdk.chat.model.Event;
-import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler;
 import java.util.ArrayList;
 import java.util.List;
 
 import io.getstream.chat.android.client.ChatClient;
+import io.getstream.chat.android.client.controllers.ChannelController;
 import io.getstream.chat.android.client.events.ChatEvent;
 import io.getstream.chat.android.client.utils.observable.Subscription;
 
@@ -48,7 +42,8 @@ public class ChannelActivity extends AppCompatActivity
         Intent intent = getIntent();
         String channelType = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_TYPE);
         String channelId = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_ID);
-        ChatClient client = ChatClient.Companion.instance();
+        ChatClient client = ChatClient.instance();
+        ChannelController channel = client.channel(channelType, channelId);
 
         // we're using data binding in this example
         binding = DataBindingUtil.setContentView(this, R.layout.activity_channel);
@@ -64,9 +59,7 @@ public class ChannelActivity extends AppCompatActivity
 
         MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<>());
         // TODO: how to listen to events in java?
-        client.events().subscribe((ChatEvent event) -> {
-
-        });
+        channel.events().subscribe()
         currentlyTyping.observe(this, users -> {
             String typing = "nobody is typing";
             if (!users.isEmpty()) {
