@@ -5,8 +5,8 @@ import android.view.ViewGroup
 import com.getstream.sdk.chat.adapter.AttachmentListItemAdapter
 import com.getstream.sdk.chat.adapter.BaseAttachmentViewHolder
 import com.getstream.sdk.chat.adapter.MessageViewHolderFactory
-import com.getstream.sdk.chat.model.Attachment
-import com.getstream.sdk.chat.rest.Message
+import io.getstream.chat.android.client.models.Attachment
+import io.getstream.chat.android.client.models.Message
 
 class MyMessageViewHolderFactory : MessageViewHolderFactory() {
 
@@ -17,7 +17,8 @@ class MyMessageViewHolderFactory : MessageViewHolderFactory() {
         attachments: List<Attachment>?,
         attachment: Attachment
     ): Int {
-        return if (attachment.imageURL != null && attachment.imageURL.indexOf("imgur") != -1) {
+        // TODO: this if close doesn't feel very kotlin
+        return if (attachment.imageUrl != null && attachment.imageUrl!!.indexOf("imgur") != -1) {
             IMGUR_TYPE
         } else super.getAttachmentViewType(message, mine, position, attachments, attachment)
     }

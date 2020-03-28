@@ -1,15 +1,22 @@
 package com.example.chattutorial
 
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.chattutorial.databinding.ActivityMainBinding
-import com.getstream.sdk.chat.StreamChat
-import com.getstream.sdk.chat.enums.Filters.*
-import com.getstream.sdk.chat.rest.User
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
-import java.util.*
+import io.getstream.chat.android.client.ChatClient
+import io.getstream.chat.android.client.errors.ChatError
+import io.getstream.chat.android.client.logger.ChatLogLevel
+import io.getstream.chat.android.client.models.Filters.`in`
+import io.getstream.chat.android.client.models.Filters.and
+import io.getstream.chat.android.client.models.Filters.eq
+import io.getstream.chat.android.client.models.User
+import io.getstream.chat.android.client.socket.InitConnectionListener
+
 
 /**
  * This activity shows a list of channels
@@ -22,17 +29,24 @@ class MainActivity : AppCompatActivity() {
 
         // setup the client using the example API key
         // normally you would call init in your Application class and not the activity
-        StreamChat.init("b67pax5b2wdq", this.applicationContext)
-        val client = StreamChat.getInstance(this.application)
-        val extraData = HashMap<String, Any>()
-        extraData["name"] = "Paranoid Android"
-        extraData["image"] = "https://bit.ly/2TIt8NR"
-        val currentUser = User("summer-brook-2", extraData)
+        val client = ChatClient.Builder("b67pax5b2wdq", this.applicationContext).logLevel(
+            ChatLogLevel.ALL).build()
+
+        val user = User("summer-brook-2")
+        user.extraData["name"] = "Paranoid Android"
+        user.extraData["image"] = "https://bit.ly/2TIt8NR"
         // User token is typically provided by your server when the user authenticates
-        client.setUser(
-            currentUser,
-            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic3VtbWVyLWJyb29rLTIifQ.CzyOx8kgrc61qVbzWvhV1WD3KPEo5ZFZH-326hIdKz0"
-        )
+        val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic3VtbWVyLWJyb29rLTIifQ.CzyOx8kgrc61qVbzWvhV1WD3KPEo5ZFZH-326hIdKz0"
+        client.setUser(user, token, object: InitConnectionListener() {
+            override fun onSuccess(data: ConnectionData) {
+                Log.i("MainActivity", "setUser completed")
+            }
+
+            override fun onError(error: ChatError) {
+                Toast.makeText(applicationContext, error.toString(), Toast.LENGTH_LONG).show()
+                Log.e("MainActivity", "setUser onError")
+            }
+        })
 
         // we're using data binding in this example
         val binding: ActivityMainBinding =

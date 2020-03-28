@@ -9,14 +9,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.chattutorial.databinding.ActivityChannelBinding
-import com.getstream.sdk.chat.StreamChat
-import com.getstream.sdk.chat.model.Channel
-import com.getstream.sdk.chat.model.Event
-import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler
 import com.getstream.sdk.chat.utils.PermissionChecker
 import com.getstream.sdk.chat.view.MessageInputView.PermissionRequestListener
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory
+import io.getstream.chat.android.client.ChatClient
+import io.getstream.chat.android.client.events.TypingStartEvent
+import io.getstream.chat.android.client.events.TypingStopEvent
+import io.getstream.chat.android.client.models.Channel
 import java.util.*
 
 
@@ -35,16 +35,15 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         // receive the intent and create a channel object
         val intent = intent
         val channelType = intent.getStringExtra(EXTRA_CHANNEL_TYPE)
-        val channelID = intent.getStringExtra(EXTRA_CHANNEL_ID)
-        val client = StreamChat.getInstance(application)
+        val channelId = intent.getStringExtra(EXTRA_CHANNEL_ID)
+        val client = ChatClient.instance()
 
         // we're using data binding in this example
         binding = DataBindingUtil.setContentView(this, R.layout.activity_channel)
         // most the business logic of the chat is handled in the ChannelViewModel view model
         binding.lifecycleOwner = this
 
-        val channel = client.channel(channelType, channelID)
-        val viewModelFactory = ChannelViewModelFactory(application, channel)
+        val viewModelFactory = ChannelViewModelFactory(application, channelType, channelId)
         val viewModel = ViewModelProvider(this, viewModelFactory).get(ChannelViewModel::class.java)
 
         // connect the view model
@@ -58,23 +57,28 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         binding.messageInput.setPermissionRequestListener(this)
 
         val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
-        channel.addEventHandler(object : ChatChannelEventHandler() {
-            override fun onTypingStart(event: Event) {
-                val typing = currentlyTyping.value ?: listOf()
-                val typingCopy : MutableList<String> = typing.toMutableList()
-                if (typingCopy.contains(event.user.name).not()) {
-                    typingCopy.add(event.user.name)
-                }
-                currentlyTyping.postValue(typingCopy)
-            }
 
-            override fun onTypingStop(event: Event) {
-                val typing = currentlyTyping.value ?: listOf()
-                val typingCopy : MutableList<String> = typing.toMutableList()
-                typingCopy.remove(event.user.name)
-                currentlyTyping.postValue(typingCopy)
+        // TODO: channel level events such as channel.events().subscribe would be cleaner
+        client.events().subscribe {
+            if (it.cid != "${channelType}:${channelId}") {
+                return@subscribe
             }
-        })
+            val name = it.user?.name ?: ""
+            val typing = currentlyTyping.value ?: listOf()
+            val typingCopy : MutableList<String> = typing.toMutableList()
+            when (it) {
+                is TypingStartEvent -> {
+                    if (typingCopy.contains(name).not()) {
+                        typingCopy.add(name)
+                    }
+                    currentlyTyping.postValue(typingCopy)
+                }
+                is TypingStopEvent -> {
+                    typingCopy.remove(name)
+                    currentlyTyping.postValue(typingCopy)
+                }
+            }
+        }
 
         val typingObserver = Observer<List<String>> { users ->
             var typing = "nobody is typing"
