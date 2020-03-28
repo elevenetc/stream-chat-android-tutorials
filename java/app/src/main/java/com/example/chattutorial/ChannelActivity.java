@@ -27,6 +27,10 @@ import com.getstream.sdk.chat.rest.core.ChatChannelEventHandler;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.getstream.chat.android.client.ChatClient;
+import io.getstream.chat.android.client.events.ChatEvent;
+import io.getstream.chat.android.client.utils.observable.Subscription;
+
 /**
  * Show the messages for a channel
  */
@@ -43,39 +47,25 @@ public class ChannelActivity extends AppCompatActivity
         // receive the intent and create a channel object
         Intent intent = getIntent();
         String channelType = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_TYPE);
-        String channelID = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_ID);
-        Client client = StreamChat.getInstance(getApplication());
+        String channelId = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_ID);
+        ChatClient client = ChatClient.Companion.instance();
 
         // we're using data binding in this example
         binding = DataBindingUtil.setContentView(this, R.layout.activity_channel);
         // most the business logic of the chat is handled in the ChannelViewModel view model
         binding.setLifecycleOwner(this);
 
-        Channel channel = client.channel(channelType, channelID);
-        ChannelViewModelFactory viewModelFactory = new ChannelViewModelFactory(this.getApplication(), channel);
+        ChannelViewModelFactory viewModelFactory = new ChannelViewModelFactory(this.getApplication(), channelType, channelId);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(ChannelViewModel.class);
 
         // connect the view model
         binding.setViewModel(viewModel);
         binding.messageList.setViewHolderFactory(new MyMessageViewHolderFactory());
 
-        MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<String>());
-        channel.addEventHandler(new ChatChannelEventHandler() {
-            @Override
-            public void onTypingStart(Event event) {
-                List<String> typingCopy = currentlyTyping.getValue();
-                if (!typingCopy.contains(event.getUser().getName())) {
-                    typingCopy.add(event.getUser().getName());
-                }
-                currentlyTyping.postValue(typingCopy);
-            }
+        MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<>());
+        // TODO: how to listen to events in java?
+        client.events().subscribe((ChatEvent event) -> {
 
-            @Override
-            public void onTypingStop(Event event) {
-                List<String> typingCopy = currentlyTyping.getValue();
-                typingCopy.remove(event.getUser().getName());
-                currentlyTyping.postValue(typingCopy);
-            }
         });
         currentlyTyping.observe(this, users -> {
             String typing = "nobody is typing";

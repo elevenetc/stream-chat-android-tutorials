@@ -5,17 +5,18 @@ import android.view.ViewGroup;
 import com.getstream.sdk.chat.adapter.AttachmentListItemAdapter;
 import com.getstream.sdk.chat.adapter.BaseAttachmentViewHolder;
 import com.getstream.sdk.chat.adapter.MessageViewHolderFactory;
-import com.getstream.sdk.chat.model.Attachment;
-import com.getstream.sdk.chat.rest.Message;
 
 import java.util.List;
+
+import io.getstream.chat.android.client.models.Attachment;
+import io.getstream.chat.android.client.models.Message;
 
 public class MyMessageViewHolderFactory extends MessageViewHolderFactory {
     private static int IMGUR_TYPE = 0;
 
     @Override
     public int getAttachmentViewType(Message message, Boolean mine, Position position, List<Attachment> attachments, Attachment attachment) {
-        if (attachment.getImageURL() != null && attachment.getImageURL().contains("imgur")) {
+        if (attachment.getImageUrl() != null && attachment.getImageUrl().contains("imgur")) {
             return IMGUR_TYPE;
         }
         return super.getAttachmentViewType(message, mine, position, attachments, attachment);

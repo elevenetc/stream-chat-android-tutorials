@@ -5,22 +5,21 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 
 import com.example.chattutorial.databinding.ActivityMainBinding;
-import com.getstream.sdk.chat.StreamChat;
 import com.getstream.sdk.chat.enums.FilterObject;
-import com.getstream.sdk.chat.rest.User;
-import com.getstream.sdk.chat.rest.core.Client;
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel;
 
-import java.util.HashMap;
-
-import static com.getstream.sdk.chat.enums.Filters.and;
-import static com.getstream.sdk.chat.enums.Filters.in;
-import static com.getstream.sdk.chat.enums.Filters.eq;
 
 import android.content.Intent;
+import android.util.Log;
+import android.widget.Toast;
+
+import io.getstream.chat.android.client.ChatClient;
+import io.getstream.chat.android.client.errors.ChatError;
+import io.getstream.chat.android.client.logger.ChatLogLevel;
+import io.getstream.chat.android.client.models.User;
+import io.getstream.chat.android.client.socket.InitConnectionListener;
 
 /**
  * This activity shows a list of channels
@@ -35,16 +34,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         // setup the client using the example API key
-        // normal you would call init in your Application class and not the activity
-        StreamChat.init("b67pax5b2wdq", this.getApplicationContext());
-        Client client = StreamChat.getInstance(this.getApplication());
-        HashMap<String, Object> extraData = new HashMap<>();
-        extraData.put("name", "Paranoid Android");
-        extraData.put("image", "https://bit.ly/2TIt8NR");
-        User currentUser = new User("twilight-lab-0", extraData);
-        // User token is typically provided by your server when the user authenticates
-        client.setUser(currentUser, "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoidHdpbGlnaHQtbGFiLTAifQ.OI_QhLxh8uT8Ug6wRav-80_pkdZzKKBRyNAfXp4aHKY");
+        // normally you would call init in your Application class and not the activity
+        ChatClient client = new ChatClient.Builder("b67pax5b2wdq", getApplicationContext()).logLevel(
+                ChatLogLevel.ALL).build();
 
+        User user = new User("summer-brook-2");
+        // TODO: how to write to extra data?
+        user.extraData["name"] = "Paranoid Android";
+        user.extraData["image"] = "https://bit.ly/2TIt8NR";
+        // User token is typically provided by your server when the user authenticates
+        String token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic3VtbWVyLWJyb29rLTIifQ.CzyOx8kgrc61qVbzWvhV1WD3KPEo5ZFZH-326hIdKz0";
+        client.setUser(user, token, new InitConnectionListener() {
+            @Override
+            public void onSuccess(ConnectionData data) {
+                Log.i("MainActivity", "setUser completed");
+            }
+
+            @Override
+            public void onError(ChatError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+                Log.e("MainActivity", "setUser onError");
+            }
+        });
         // we're using data binding in this example
         ActivityMainBinding binding =
                 DataBindingUtil.setContentView(this, R.layout.activity_main);
