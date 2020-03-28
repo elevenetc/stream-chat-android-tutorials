@@ -17,8 +17,8 @@ class MyMessageViewHolderFactory : MessageViewHolderFactory() {
         attachments: List<Attachment>?,
         attachment: Attachment
     ): Int {
-        // TODO: this if close doesn't feel very kotlin
-        return if (attachment.imageUrl != null && attachment.imageUrl!!.indexOf("imgur") != -1) {
+        val imageUrl = attachment.imageUrl ?: ""
+        return if (imageUrl.indexOf("imgur") != -1) {
             IMGUR_TYPE
         } else super.getAttachmentViewType(message, mine, position, attachments, attachment)
     }

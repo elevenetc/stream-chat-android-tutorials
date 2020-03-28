@@ -37,6 +37,7 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         val channelType = intent.getStringExtra(EXTRA_CHANNEL_TYPE)
         val channelId = intent.getStringExtra(EXTRA_CHANNEL_ID)
         val client = ChatClient.instance()
+        val channel = client.channel(channelType, channelId)
 
         // we're using data binding in this example
         binding = DataBindingUtil.setContentView(this, R.layout.activity_channel)
@@ -58,11 +59,7 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
 
         val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
 
-        // TODO: channel level events such as channel.events().subscribe would be cleaner
-        client.events().subscribe {
-            if (it.cid != "${channelType}:${channelId}") {
-                return@subscribe
-            }
+        channel.events().subscribe {
             val name = it.user?.name ?: ""
             val typing = currentlyTyping.value ?: listOf()
             val typingCopy : MutableList<String> = typing.toMutableList()
