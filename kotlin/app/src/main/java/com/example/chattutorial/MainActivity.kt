@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.chattutorial.databinding.ActivityMainBinding
+import com.getstream.sdk.chat.StreamChat
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
 import io.getstream.chat.android.client.ChatClient
 import io.getstream.chat.android.client.errors.ChatError
@@ -27,6 +28,9 @@ class MainActivity : AppCompatActivity() {
         // normally you would call init in your Application class and not the activity
         val client = ChatClient.Builder("b67pax5b2wdq", this.applicationContext).logLevel(
             ChatLogLevel.ALL).build()
+
+        val uxConfig = StreamChat.Config("b67pax5b2wdq", this.applicationContext)
+        StreamChat.init(uxConfig)
 
         val user = User("summer-brook-2")
         user.extraData["name"] = "Paranoid Android"
@@ -57,7 +61,8 @@ class MainActivity : AppCompatActivity() {
         binding.channelList.setViewModel(viewModel, this)
 
         // query all channels of type messaging
-        val filter = and(eq("type", "messaging"), `in`("members", user.id))
+        //val filter = and(eq("type", "messaging"), `in`("members", user.id))
+        val filter = eq("type", "messaging")
         viewModel.setChannelFilter(filter)
 
         // click handlers for clicking a user avatar or channel
