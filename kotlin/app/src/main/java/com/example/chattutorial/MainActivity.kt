@@ -17,10 +17,6 @@ import io.getstream.chat.android.client.models.Filters.eq
 import io.getstream.chat.android.client.models.User
 import io.getstream.chat.android.client.socket.InitConnectionListener
 
-
-/**
- * This activity shows a list of channels
- */
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +69,5 @@ class MainActivity : AppCompatActivity() {
         binding.channelList.setOnUserClickListener { user ->
             // open your user profile
         }
-
     }
 }

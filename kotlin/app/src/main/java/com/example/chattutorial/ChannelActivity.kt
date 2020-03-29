@@ -19,11 +19,6 @@ import io.getstream.chat.android.client.events.TypingStopEvent
 import io.getstream.chat.android.client.models.Channel
 import java.util.*
 
-
-/**
- * Show the messages for a channel
- *
- */
 class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
 
     private lateinit var binding: ActivityChannelBinding

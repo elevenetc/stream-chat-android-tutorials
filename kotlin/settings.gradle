@@ -1,7 +1,3 @@
 include ':app'
 rootProject.name='ChatTutorial'
 
-
-include ':chatux'
-
-project(":chatux").projectDir=new File("/Users/thierry/workspace/stream-chat-android/library")

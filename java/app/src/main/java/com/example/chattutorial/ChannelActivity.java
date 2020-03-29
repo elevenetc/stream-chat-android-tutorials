@@ -1,7 +1,6 @@
 package com.example.chattutorial;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.text.TextUtils;
 
@@ -23,13 +22,11 @@ import java.util.List;
 import io.getstream.chat.android.client.ChatClient;
 import io.getstream.chat.android.client.controllers.ChannelController;
 import io.getstream.chat.android.client.events.ChatEvent;
-import io.getstream.chat.android.client.utils.observable.Subscription;
+import io.getstream.chat.android.client.events.TypingStartEvent;
+import io.getstream.chat.android.client.events.TypingStopEvent;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
-/**
- * Show the messages for a channel
- */
 public class ChannelActivity extends AppCompatActivity
         implements MessageInputView.PermissionRequestListener {
 
@@ -44,7 +41,7 @@ public class ChannelActivity extends AppCompatActivity
         Intent intent = getIntent();
         String channelType = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_TYPE);
         String channelId = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_ID);
-        ChatClient client = ChatClient.Companion.instance();
+        ChatClient client = ChatClient.instance();
         ChannelController channel = client.channel(channelType, channelId);
 
         // we're using data binding in this example
@@ -60,10 +57,20 @@ public class ChannelActivity extends AppCompatActivity
         binding.messageList.setViewHolderFactory(new MyMessageViewHolderFactory());
 
         MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<>());
-        // TODO: how to listen to events in java?
         channel.events().subscribe(new Function1<ChatEvent, Unit>() {
             @Override
             public Unit invoke(ChatEvent event) {
+                if (event instanceof TypingStartEvent) {
+                    List<String> typingCopy = currentlyTyping.getValue();
+                    if (!typingCopy.contains(event.getUser().getName())) {
+                        typingCopy.add(event.getUser().getName());
+                    }
+                    currentlyTyping.postValue(typingCopy);
+                } else if (event instanceof TypingStopEvent) {
+                    List<String> typingCopy = currentlyTyping.getValue();
+                    typingCopy.remove(event.getUser().getName());
+                    currentlyTyping.postValue(typingCopy);
+                }
                 return null;
             }
         });
@@ -75,6 +82,7 @@ public class ChannelActivity extends AppCompatActivity
             binding.setTyping(typing);
         });
 
+        //binding.channelHeader.setViewModel(viewModel, this)
         binding.messageList.setViewModel(viewModel, this);
         binding.messageInput.setViewModel(viewModel, this);
     }

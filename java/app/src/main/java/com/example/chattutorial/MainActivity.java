@@ -6,13 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.chattutorial.databinding.ActivityMainBinding;
-import com.getstream.sdk.chat.viewmodel.ChannelListViewModel;
-
-
 import android.content.Intent;
 import android.util.Log;
 import android.widget.Toast;
+
+import com.example.chattutorial.databinding.ActivityMainBinding;
+import com.getstream.sdk.chat.viewmodel.ChannelListViewModel;
+
 import io.getstream.chat.android.client.models.Filters;
 
 import io.getstream.chat.android.client.ChatClient;
@@ -22,9 +22,6 @@ import io.getstream.chat.android.client.models.User;
 import io.getstream.chat.android.client.socket.InitConnectionListener;
 import io.getstream.chat.android.client.utils.FilterObject;
 
-/**
- * This activity shows a list of channels
- */
 public class MainActivity extends AppCompatActivity {
     public static final String EXTRA_CHANNEL_TYPE = "com.example.chattutorial.CHANNEL_TYPE";
     public static final String EXTRA_CHANNEL_ID = "com.example.chattutorial.CHANNEL_ID";
@@ -82,6 +79,5 @@ public class MainActivity extends AppCompatActivity {
         binding.channelList.setOnUserClickListener(theUser -> {
             // open your user profile
         });
-
     }
 }
