@@ -11,6 +11,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.chattutorial.databinding.ActivityMainBinding;
+import com.getstream.sdk.chat.Chat;
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel;
 
 import io.getstream.chat.android.client.models.Filters;
@@ -33,8 +34,10 @@ public class MainActivity extends AppCompatActivity {
 
         // setup the client using the example API key
         // normally you would call init in your Application class and not the activity
-        ChatClient client = new ChatClient.Builder("b67pax5b2wdq", getApplicationContext()).logLevel(
+        Chat chat = new Chat.Builder("b67pax5b2wdq", getApplicationContext()).logLevel(
                 ChatLogLevel.ALL).build();
+
+        ChatClient client = chat.getClient();
 
         User user = new User("summer-brook-2");
         user.getExtraData().put("name", "Paranoid Android");
