@@ -4,26 +4,28 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.lifecycle.ViewModelProvider;
-
 import com.example.chattutorial.databinding.ActivityChannelBinding;
 import com.getstream.sdk.chat.utils.PermissionChecker;
 import com.getstream.sdk.chat.view.MessageInputView;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModel;
 import com.getstream.sdk.chat.viewmodel.ChannelViewModelFactory;
 
-import androidx.lifecycle.MutableLiveData;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.LifecycleOwner;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import io.getstream.chat.android.client.ChatClient;
 import io.getstream.chat.android.client.controllers.ChannelController;
 import io.getstream.chat.android.client.events.ChatEvent;
 import io.getstream.chat.android.client.events.TypingStartEvent;
 import io.getstream.chat.android.client.events.TypingStopEvent;
+import io.getstream.chat.android.client.models.Channel;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -49,42 +51,53 @@ public class ChannelActivity extends AppCompatActivity
         // most the business logic of the chat is handled in the ChannelViewModel view model
         binding.setLifecycleOwner(this);
 
+        initViewModel(channelType, channelId);
+    }
+
+    private void initViewModel(String channelType, String channelId) {
+
         ChannelViewModelFactory viewModelFactory = new ChannelViewModelFactory(this.getApplication(), channelType, channelId);
         viewModel = new ViewModelProvider(this, viewModelFactory).get(ChannelViewModel.class);
+        ChatClient client = ChatClient.instance();
+        ChannelController channelController = client.channel(channelType, channelId);
+        LifecycleOwner lifecycleOwner = this;
 
-        // connect the view model
-        binding.setViewModel(viewModel);
-        binding.messageList.setViewHolderFactory(new MyMessageViewHolderFactory());
+        viewModel.getInitialized().observe(this, channel -> {
 
-        MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<>());
-        channel.events().subscribe(new Function1<ChatEvent, Unit>() {
-            @Override
-            public Unit invoke(ChatEvent event) {
-                if (event instanceof TypingStartEvent) {
-                    List<String> typingCopy = currentlyTyping.getValue();
-                    if (!typingCopy.contains(event.getUser().getName())) {
-                        typingCopy.add(event.getUser().getName());
+            // connect the view model
+            binding.setViewModel(viewModel);
+            binding.messageList.setViewHolderFactory(new MyMessageViewHolderFactory());
+
+            MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<>());
+            channelController.events().subscribe(new Function1<ChatEvent, Unit>() {
+                @Override
+                public Unit invoke(ChatEvent event) {
+                    if (event instanceof TypingStartEvent) {
+                        List<String> typingCopy = currentlyTyping.getValue();
+                        if (!typingCopy.contains(event.getUser().getName())) {
+                            typingCopy.add(event.getUser().getName());
+                        }
+                        currentlyTyping.postValue(typingCopy);
+                    } else if (event instanceof TypingStopEvent) {
+                        List<String> typingCopy = currentlyTyping.getValue();
+                        typingCopy.remove(event.getUser().getName());
+                        currentlyTyping.postValue(typingCopy);
                     }
-                    currentlyTyping.postValue(typingCopy);
-                } else if (event instanceof TypingStopEvent) {
-                    List<String> typingCopy = currentlyTyping.getValue();
-                    typingCopy.remove(event.getUser().getName());
-                    currentlyTyping.postValue(typingCopy);
+                    return null;
                 }
-                return null;
-            }
-        });
-        currentlyTyping.observe(this, users -> {
-            String typing = "nobody is typing";
-            if (!users.isEmpty()) {
-                typing = "typing: " + TextUtils.join(", ", users);
-            }
-            binding.setTyping(typing);
-        });
+            });
+            currentlyTyping.observe(lifecycleOwner, users -> {
+                String typing = "nobody is typing";
+                if (!users.isEmpty()) {
+                    typing = "typing: " + TextUtils.join(", ", users);
+                }
+                binding.setTyping(typing);
+            });
 
-        //binding.channelHeader.setViewModel(viewModel, this)
-        binding.messageList.setViewModel(viewModel, this);
-        binding.messageInput.setViewModel(viewModel, this);
+            //binding.channelHeader.setViewModel(viewModel, this)
+            binding.messageList.setViewModel(viewModel, lifecycleOwner);
+            binding.messageInput.setViewModel(viewModel, lifecycleOwner);
+        });
     }
 
     @Override

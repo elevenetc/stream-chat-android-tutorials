@@ -31,56 +31,13 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         val intent = intent
         val channelType = intent.getStringExtra(EXTRA_CHANNEL_TYPE)
         val channelId = intent.getStringExtra(EXTRA_CHANNEL_ID)
-        val client = ChatClient.instance()
-        val channel = client.channel(channelType, channelId)
 
         // we're using data binding in this example
         binding = DataBindingUtil.setContentView(this, R.layout.activity_channel)
         // most the business logic of the chat is handled in the ChannelViewModel view model
         binding.lifecycleOwner = this
 
-        val viewModelFactory = ChannelViewModelFactory(application, channelType, channelId)
-        val viewModel = ViewModelProvider(this, viewModelFactory).get(ChannelViewModel::class.java)
-
-        // connect the view model
-        binding.viewModel = viewModel
-        val factory = MyMessageViewHolderFactory()
-        binding.messageList.setViewHolderFactory(factory)
-        binding.messageList.setViewModel(viewModel, this)
-        binding.messageInput.setViewModel(viewModel, this)
-        // binding.channelHeader.setViewModel(viewModel, this)
-        // If you are using own MessageInputView please comment this line.
-        binding.messageInput.setPermissionRequestListener(this)
-
-        val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
-
-        channel.events().subscribe {
-            val name = it.user?.name ?: ""
-            val typing = currentlyTyping.value ?: listOf()
-            val typingCopy : MutableList<String> = typing.toMutableList()
-            when (it) {
-                is TypingStartEvent -> {
-                    if (typingCopy.contains(name).not()) {
-                        typingCopy.add(name)
-                    }
-                    currentlyTyping.postValue(typingCopy)
-                }
-                is TypingStopEvent -> {
-                    typingCopy.remove(name)
-                    currentlyTyping.postValue(typingCopy)
-                }
-            }
-        }
-
-        val typingObserver = Observer<List<String>> { users ->
-            var typing = "nobody is typing"
-            if (users.isNotEmpty()) {
-                typing = "typing: " + users.joinToString(", ")
-            }
-            binding.typing = typing
-        }
-        currentlyTyping.observe(this,typingObserver)
-
+        initViewModel(channelType, channelId)
     }
 
     override fun onActivityResult(
@@ -104,6 +61,59 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         PermissionChecker.permissionCheck(this, null)
         // If you are writing a Channel Screen in a Fragment, use the code below instead of the code above.
         // PermissionChecker.permissionCheck(getActivity(), this);
+    }
+
+    private fun initViewModel(
+        channelType: String,
+        channelId: String
+    ) {
+
+        val viewModelFactory = ChannelViewModelFactory(application, channelType, channelId)
+        val viewModel = ViewModelProvider(this, viewModelFactory).get(ChannelViewModel::class.java)
+        val client = ChatClient.instance()
+        val channelController = client.channel(channelType, channelId)
+
+        viewModel.initialized.observe(this, Observer<Channel> { channel ->
+            // connect the view model
+            binding.viewModel = viewModel
+            val factory = MyMessageViewHolderFactory()
+            binding.messageList.setViewHolderFactory(factory)
+            binding.messageList.setViewModel(viewModel, this)
+            binding.messageInput.setViewModel(viewModel, this)
+            // binding.channelHeader.setViewModel(viewModel, this)
+            // If you are using own MessageInputView please comment this line.
+            binding.messageInput.setPermissionRequestListener(this)
+
+            val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
+
+            channelController.events().subscribe {
+                val name = it.user?.name ?: ""
+                val typing = currentlyTyping.value ?: listOf()
+                val typingCopy: MutableList<String> = typing.toMutableList()
+                when (it) {
+                    is TypingStartEvent -> {
+                        if (typingCopy.contains(name).not()) {
+                            typingCopy.add(name)
+                        }
+                        currentlyTyping.postValue(typingCopy)
+                    }
+                    is TypingStopEvent -> {
+                        typingCopy.remove(name)
+                        currentlyTyping.postValue(typingCopy)
+                    }
+                }
+            }
+
+            val typingObserver = Observer<List<String>> { users ->
+                var typing = "nobody is typing"
+                if (users.isNotEmpty()) {
+                    typing = "typing: " + users.joinToString(", ")
+                }
+                binding.typing = typing
+            }
+            currentlyTyping.observe(this, typingObserver)
+        }
+        )
     }
 
 

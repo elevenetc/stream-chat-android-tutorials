@@ -7,9 +7,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.ViewModelProvider
 import com.example.chattutorial.databinding.ActivityMainBinding
-import com.getstream.sdk.chat.StreamChat
+import com.getstream.sdk.chat.Chat
 import com.getstream.sdk.chat.viewmodel.ChannelListViewModel
-import io.getstream.chat.android.client.ChatClient
 import io.getstream.chat.android.client.errors.ChatError
 import io.getstream.chat.android.client.logger.ChatLogLevel
 import io.getstream.chat.android.client.models.Filters.`in`
@@ -26,18 +25,19 @@ class MainActivity : AppCompatActivity() {
 
         // setup the client using the example API key
         // normally you would call init in your Application class and not the activity
-        val client = ChatClient.Builder("b67pax5b2wdq", this.applicationContext).logLevel(
-            ChatLogLevel.ALL).build()
+        val chat = Chat.Builder("b67pax5b2wdq", this.applicationContext)
+            .logLevel(ChatLogLevel.ALL)
+            .build()
 
-        val uxConfig = StreamChat.Config("b67pax5b2wdq", this.applicationContext)
-        StreamChat.init(uxConfig)
+        val client = chat.client
 
         val user = User("summer-brook-2")
         user.extraData["name"] = "Paranoid Android"
         user.extraData["image"] = "https://bit.ly/2TIt8NR"
         // User token is typically provided by your server when the user authenticates
-        val token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic3VtbWVyLWJyb29rLTIifQ.CzyOx8kgrc61qVbzWvhV1WD3KPEo5ZFZH-326hIdKz0"
-        client.setUser(user, token, object: InitConnectionListener() {
+        val token =
+            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoic3VtbWVyLWJyb29rLTIifQ.CzyOx8kgrc61qVbzWvhV1WD3KPEo5ZFZH-326hIdKz0"
+        client.setUser(user, token, object : InitConnectionListener() {
             override fun onSuccess(data: ConnectionData) {
                 Log.i("MainActivity", "setUser completed")
             }
