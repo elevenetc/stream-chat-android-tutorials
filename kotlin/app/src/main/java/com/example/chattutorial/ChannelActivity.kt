@@ -72,6 +72,7 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         val viewModel = ViewModelProvider(this, viewModelFactory).get(ChannelViewModel::class.java)
         val client = ChatClient.instance()
         val channelController = client.channel(channelType, channelId)
+        val lifeCycleOwner = this
 
         viewModel.initialized.observe(this, Observer<Channel> { channel ->
             // connect the view model
@@ -111,7 +112,7 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
                 }
                 binding.typing = typing
             }
-            currentlyTyping.observe(this, typingObserver)
+            currentlyTyping.observe(lifeCycleOwner, typingObserver)
         }
         )
     }
