@@ -88,7 +88,7 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
             val currentlyTyping = MutableLiveData<List<String>>(ArrayList())
 
             channelController.events().subscribe {
-                val name = it.user?.name ?: ""
+                val name = it.user!!.extraData["name"]!! as String
                 val typing = currentlyTyping.value ?: listOf()
                 val typingCopy: MutableList<String> = typing.toMutableList()
                 when (it) {

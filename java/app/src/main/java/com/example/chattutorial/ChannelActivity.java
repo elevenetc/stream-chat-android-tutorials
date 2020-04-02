@@ -26,6 +26,7 @@ import io.getstream.chat.android.client.events.ChatEvent;
 import io.getstream.chat.android.client.events.TypingStartEvent;
 import io.getstream.chat.android.client.events.TypingStopEvent;
 import io.getstream.chat.android.client.models.Channel;
+import io.getstream.chat.android.client.models.User;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
 
@@ -72,15 +73,18 @@ public class ChannelActivity extends AppCompatActivity
             channelController.events().subscribe(new Function1<ChatEvent, Unit>() {
                 @Override
                 public Unit invoke(ChatEvent event) {
+                    User user = event.getUser();
+                    String name = (String) user.getExtraData().get("name");
+
                     if (event instanceof TypingStartEvent) {
                         List<String> typingCopy = currentlyTyping.getValue();
-                        if (!typingCopy.contains(event.getUser().getName())) {
-                            typingCopy.add(event.getUser().getName());
+                        if (!typingCopy.contains(name)) {
+                            typingCopy.add(name);
                         }
                         currentlyTyping.postValue(typingCopy);
                     } else if (event instanceof TypingStopEvent) {
                         List<String> typingCopy = currentlyTyping.getValue();
-                        typingCopy.remove(event.getUser().getName());
+                        typingCopy.remove(name);
                         currentlyTyping.postValue(typingCopy);
                     }
                     return null;
