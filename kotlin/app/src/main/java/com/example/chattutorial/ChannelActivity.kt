@@ -77,8 +77,7 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         viewModel.initialized.observe(this, Observer<Channel> { channel ->
             // connect the view model
             binding.viewModel = viewModel
-            val factory = MyMessageViewHolderFactory()
-            binding.messageList.setViewHolderFactory(factory)
+            binding.messageList.setViewHolderFactory(MyMessageViewHolderFactory())
             binding.messageList.setViewModel(viewModel, this)
             binding.messageInput.setViewModel(viewModel, this)
             // binding.channelHeader.setViewModel(viewModel, this)
