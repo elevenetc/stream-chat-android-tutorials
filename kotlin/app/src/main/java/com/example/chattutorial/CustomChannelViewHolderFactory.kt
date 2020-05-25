@@ -60,8 +60,6 @@ class CustomChannelViewHolderFactory(
 
                 if (channel.messages.isNotEmpty()) {
 
-                    LlcMigrationUtils.readLastMessage(channel)
-
                     val lastMessage = channel.messages.first()
                     view.textLastMessage.text = "Message: " + lastMessage.text
                     view.textLastMessageDate.text = "Message date:" + lastMessage.createdAt!!.toString()
