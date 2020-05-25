@@ -74,10 +74,10 @@ class ChannelActivity : AppCompatActivity(), PermissionRequestListener {
         val channelController = client.channel(channelType, channelId)
         val lifeCycleOwner = this
 
-        viewModel.initialized.observe(this, Observer<Channel> { channel ->
+        viewModel.initialized.observe(this, Observer {
             // connect the view model
             binding.viewModel = viewModel
-            binding.messageList.setViewHolderFactory(MyMessageViewHolderFactory())
+            binding.messageList.setViewHolderFactory(CustomMessageViewHolderFactory())
             binding.messageList.setViewModel(viewModel, this)
             binding.messageInput.setViewModel(viewModel, this)
             // binding.channelHeader.setViewModel(viewModel, this)

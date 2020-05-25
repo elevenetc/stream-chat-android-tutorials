@@ -13,7 +13,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.example.chattutorial.MainActivity">
+        tools:context="com.example.chattutorial.ChannelListActivity">
 
         <com.getstream.sdk.chat.view.ChannelListView
             android:id="@+id/channelList"

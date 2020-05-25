@@ -1,14 +1,13 @@
 package com.example.chattutorial
 
 import android.view.ViewGroup
-
 import com.getstream.sdk.chat.adapter.AttachmentListItemAdapter
 import com.getstream.sdk.chat.adapter.BaseAttachmentViewHolder
 import com.getstream.sdk.chat.adapter.MessageViewHolderFactory
 import io.getstream.chat.android.client.models.Attachment
 import io.getstream.chat.android.client.models.Message
 
-class MyMessageViewHolderFactory : MessageViewHolderFactory() {
+class CustomMessageViewHolderFactory : MessageViewHolderFactory() {
 
     override fun getAttachmentViewType(
         message: Message?,

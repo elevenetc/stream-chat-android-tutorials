@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
         <variable
             name="viewModel"
-            type="com.getstream.sdk.chat.viewmodel.ChannelViewModel" />
+            type="com.getstream.sdk.chat.viewmodel.ChannelViewModel"/>
 
         <variable
             name="typing"
-            type="String" />
+            type="String"/>
 
     </data>
 
@@ -19,6 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.example.chattutorial.ChannelActivity">
+
+
 
         <TextView
             android:id="@+id/channelHeader"
@@ -30,7 +32,15 @@
             android:layout_marginBottom="5dp"
             app:layout_constraintEnd_toStartOf="@+id/messageList"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <View
+            app:layout_constraintTop_toBottomOf="@id/channelHeader"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:id="@+id/customHeader"
+            android:background="#FF0000"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"/>
 
         <com.getstream.sdk.chat.view.MessageListView
             android:id="@+id/messageList"
@@ -40,14 +50,14 @@
             app:layout_constraintBottom_toTopOf="@+id/message_input"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/channelHeader"
+            app:layout_constraintTop_toBottomOf="@+id/customHeader"
 
             android:background="#f3f5f8"
             app:streamMessageTextColorMine="#FFF"
             app:streamMessageBackgroundColorMine="#70af74"
             app:streamMessageTextColorTheirs="#000"
             app:streamMessageBackgroundColorTheirs="#FFF"
-            />
+        />
 
         <TextView
             android:layout_width="wrap_content"
@@ -55,7 +65,7 @@
             android:layout_marginTop="16dp"
             android:padding="6dp"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ProgressBar
             android:layout_width="wrap_content"
@@ -64,7 +74,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <ProgressBar
             android:layout_width="25dp"
@@ -72,7 +82,7 @@
             app:isGone="@{!safeUnbox(viewModel.loadingMore)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent" />
+            app:layout_constraintTop_toBottomOf="parent"/>
 
         <com.getstream.sdk.chat.view.MessageInputView
             android:id="@+id/message_input"
@@ -84,6 +94,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/messageList" />
+            app:layout_constraintStart_toEndOf="@+id/messageList"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
