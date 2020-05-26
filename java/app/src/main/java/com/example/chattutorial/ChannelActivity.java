@@ -18,14 +18,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import io.getstream.chat.android.client.ChatClient;
 import io.getstream.chat.android.client.controllers.ChannelController;
 import io.getstream.chat.android.client.events.ChatEvent;
 import io.getstream.chat.android.client.events.TypingStartEvent;
 import io.getstream.chat.android.client.events.TypingStopEvent;
-import io.getstream.chat.android.client.models.Channel;
 import io.getstream.chat.android.client.models.User;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function1;
@@ -42,8 +40,8 @@ public class ChannelActivity extends AppCompatActivity
 
         // receive the intent and create a channel object
         Intent intent = getIntent();
-        String channelType = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_TYPE);
-        String channelId = intent.getStringExtra(MainActivity.EXTRA_CHANNEL_ID);
+        String channelType = intent.getStringExtra(ChannelListActivity.EXTRA_CHANNEL_TYPE);
+        String channelId = intent.getStringExtra(ChannelListActivity.EXTRA_CHANNEL_ID);
         ChatClient client = ChatClient.instance();
         ChannelController channel = client.channel(channelType, channelId);
 
@@ -67,7 +65,7 @@ public class ChannelActivity extends AppCompatActivity
 
             // connect the view model
             binding.setViewModel(viewModel);
-            binding.messageList.setViewHolderFactory(new MyMessageViewHolderFactory());
+            binding.messageList.setViewHolderFactory(new CustomMessageViewHolderFactory());
 
             MutableLiveData<List<String>> currentlyTyping = new MutableLiveData<>(new ArrayList<>());
             channelController.events().subscribe(new Function1<ChatEvent, Unit>() {

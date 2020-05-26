@@ -8,7 +8,6 @@ import com.getstream.sdk.chat.adapter.BaseChannelListItemViewHolder
 import com.getstream.sdk.chat.adapter.ChannelItemPayloadDiff
 import com.getstream.sdk.chat.adapter.ChannelListItemAdapter
 import com.getstream.sdk.chat.adapter.ChannelViewHolderFactory
-import com.getstream.sdk.chat.utils.LlcMigrationUtils
 import com.getstream.sdk.chat.view.ChannelListView
 import com.getstream.sdk.chat.view.ChannelListViewStyle
 import io.getstream.chat.android.client.models.Channel

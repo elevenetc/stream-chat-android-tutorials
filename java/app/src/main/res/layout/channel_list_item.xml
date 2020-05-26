@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                                   xmlns:app="http://schemas.android.com/apk/res-auto"
+                                                   xmlns:tools="http://schemas.android.com/tools"
+                                                   android:layout_width="match_parent"
+                                                   android:layout_height="wrap_content">
+
+    <TextView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:text="channel name"
+            android:id="@+id/textChannelName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    <TextView
+            tools:text="user name"
+            android:id="@+id/textLastUserName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textChannelName"/>
+
+    <TextView
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:text="last message"
+            android:id="@+id/textLastMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/textLastUserName"/>
+
+    <TextView
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:text="last message date"
+            android:id="@+id/textLastMessageDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/textLastMessage"/>
+
+    <ImageView
+            app:layout_constraintLeft_toLeftOf="parent"
+            tools:text="last message"
+            android:id="@+id/imageLastUser"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            tools:background="#ff0000"
+            app:layout_constraintTop_toBottomOf="@id/textLastMessageDate"/>
+
+    <CheckBox
+            android:enabled="false"
+            app:layout_constraintLeft_toLeftOf="parent"
+            android:text="is online"
+            android:id="@+id/checkUserPresence"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/imageLastUser"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

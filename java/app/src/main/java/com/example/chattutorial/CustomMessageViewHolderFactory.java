@@ -11,7 +11,7 @@ import java.util.List;
 import io.getstream.chat.android.client.models.Attachment;
 import io.getstream.chat.android.client.models.Message;
 
-public class MyMessageViewHolderFactory extends MessageViewHolderFactory {
+public class CustomMessageViewHolderFactory extends MessageViewHolderFactory {
     private static int IMGUR_TYPE = 0;
 
     @Override
